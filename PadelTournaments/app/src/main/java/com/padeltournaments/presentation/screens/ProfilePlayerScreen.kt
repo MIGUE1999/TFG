@@ -15,5 +15,4 @@ fun ProfilePlayerScreen(session : LoginPref, navController : NavHostController) 
         content = { TopProfileCard(session = session, navController = navController) },
         bottomBar = { BottomBar(navController = navController, screens = playerScreens) }
     )
-    Es este
 }
