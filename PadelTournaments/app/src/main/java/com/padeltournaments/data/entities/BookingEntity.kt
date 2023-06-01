@@ -2,7 +2,6 @@ package com.padeltournaments.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
 @Entity(tableName = "booking")
 data class BookingEntity (
     @PrimaryKey(autoGenerate = true)

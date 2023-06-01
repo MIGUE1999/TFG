@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.padeltournaments.presentation.navigation.NavigationScreens
-
 @Composable
 fun FAB(navController: NavHostController){
     FloatingActionButton(

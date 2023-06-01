@@ -10,8 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import com.padeltournaments.presentation.screens.*
 import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.Rol
-
-//Es el que muestra la pantalla en el scaffold: content = {BottomNavGraph(navController = navController)},
 @Composable
 fun BottomNavGraph( navController : NavHostController = rememberNavController(),
                     context : Context = LocalContext.current,
@@ -55,6 +53,9 @@ fun BottomNavGraph( navController : NavHostController = rememberNavController(),
         }
         composable(route = NavigationScreens.CreateTournament.route){
             CreateTournamentScreen(context = context, session = session, navController = navController )
+        }
+        composable(route = NavigationScreens.EditTournament.route){
+            EditTournamentScreen(context = context, session = session, navController = navController )
         }
     }
 }

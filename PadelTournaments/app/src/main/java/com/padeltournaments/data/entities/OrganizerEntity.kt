@@ -3,7 +3,6 @@ package com.padeltournaments.data.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-
 @Entity(tableName = "organizer",
     foreignKeys = [ForeignKey(
         entity = UserEntity::class,

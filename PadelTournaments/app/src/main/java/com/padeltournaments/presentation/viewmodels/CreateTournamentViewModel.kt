@@ -1,96 +1,122 @@
 package com.padeltournaments.presentation.viewmodels
 
 import android.graphics.Bitmap
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
 import com.padeltournaments.data.repository.interfaces.ITournamentRepository
+import com.padeltournaments.util.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import javax.inject.Inject
-
 @HiltViewModel
 class CreateTournamentViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
 ) : ViewModel() {
-
-    private val nameTournament = mutableStateOf("")
-    private val prizeTournament = mutableStateOf("")
-    private val inscriptionCost = mutableStateOf("")
-    private val category = mutableStateOf("")
-    private val dateIni = mutableStateOf("")
-    private val dateEnd = mutableStateOf("")
-    private val dateLimit = mutableStateOf("")
+    val nameTournament = mutableStateOf("")
+    val inscriptionCost = mutableStateOf("")
+    val prizeTournament = mutableStateOf("")
+    val category = mutableStateOf(Category.first)
+    val dateIni = mutableStateOf("")
+    val dateEnd = mutableStateOf("")
     val poster = mutableStateOf<Bitmap?>(null)
 
-    fun insertTournament(tournament : TournamentEntity){
+    val validateName = mutableStateOf(true)
+    val validateInscriptionCost = mutableStateOf(true)
+    val validatePrize = mutableStateOf(true)
+    val validateDate = mutableStateOf(true)
+    val validatePoster = mutableStateOf(true)
+
+    val validateNameError = "Introduzca un nombre valido"
+    val validateInscriptionCostError = "Introduzca un precio de inscripcion valido"
+    val validatePrizeError = "Introduzca un premio valido"
+    val validateDateError = "Introduzca las fechas correctamente"
+    val validatePosterError = "Introduzca el cartel del torneo"
+    fun createTournament(idOrg: Int){
+        val newTournament = TournamentEntity(name = nameTournament.value,
+            inscriptionCost = inscriptionCost.value,
+            prize = prizeTournament.value,
+            category = category.value,
+            startDate = dateIni.value,
+            endDate = dateEnd.value,
+            poster = poster.value,
+            idOrganizer = idOrg
+        )
+        insertTournament(newTournament)
+    }
+    private fun insertTournament(tournament : TournamentEntity){
         viewModelScope.launch(Dispatchers.IO) {
             tournamentRepository.insertTournament(tournament)
         }
     }
-
-    fun getNameTournament() : String{
-        return nameTournament.value
+    fun updateTournament(idOrg: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+            val updatedTournament = TournamentEntity(name = nameTournament.value,
+                inscriptionCost = inscriptionCost.value,
+                prize = prizeTournament.value,
+                category = category.value,
+                startDate = dateIni.value,
+                endDate = dateEnd.value,
+                poster = poster.value,
+                idOrganizer = idOrg
+            )
+            tournamentRepository.updateTournament(updatedTournament)
+        }
     }
+    fun validateData(): Boolean {
+        validateName.value = nameTournament.value.isNotBlank()
+        validateInscriptionCost.value = inscriptionCost.value.isNotBlank()
+        validatePrize.value = prizeTournament.value.isNotBlank()
 
-    fun getPrize() : String{
-        return prizeTournament.value
+        if (dateIni.value != "" && dateEnd.value != "") {
+            val format = SimpleDateFormat("dd/MM/yyyy")
+            val dateIni = format.parse(dateIni.value)
+            val dateEnd = format.parse(dateEnd.value)
+            if (dateIni != null && dateEnd != null) {
+                validateDate.value = dateIni <= dateEnd
+            } else {
+                validateDate.value = false
+            }
+        } else{ validateDate.value = false}
+
+        validatePoster.value = poster.value != null
+
+
+        return validateName.value && validateInscriptionCost.value && validatePrize.value &&
+                validateDate.value && validatePoster.value
     }
-
-    fun getInscriptionCost() : String{
-        return inscriptionCost.value
-    }
-
-    fun getCategory() : MutableState<String>{
-        return category
-    }
-
-    fun getDateIni() : String{
-        return dateIni.value
-    }
-
-    fun getDateEnd() : String{
-        return dateEnd.value
-    }
-
-    fun getDateLimit() : String{
-        return dateLimit.value
-    }
-
     fun onNameChanged(name:String){
         nameTournament.value = name
     }
-
     fun onPrizeChanged(price:String){
         prizeTournament.value = price
     }
-
     fun onInscriptionCostChanged(insCost:String){
         inscriptionCost.value = insCost
     }
-
     fun onCategoryChanged(category:String){
         this.category.value = category
     }
-
     fun onDateInitChanged(dateInit : String){
         this.dateIni.value = dateInit
     }
-
     fun onDateFinChanged(dateFin : String){
         this.dateEnd.value = dateFin
     }
-
-    fun onDateLimitChanged(dateLimit : String){
-        this.dateLimit.value = dateLimit
-    }
-
-    fun onCartelChanged(img: Bitmap?){
+    fun onCartelChanged(img: Bitmap){
         this.poster.value = img
     }
+    fun setTournament(tournament: TournamentEntity){
+         nameTournament.value = tournament.name
+         inscriptionCost.value = tournament.inscriptionCost
+         prizeTournament.value = tournament.prize
+         category.value = tournament.category
+         dateIni.value = tournament.startDate
+         dateEnd.value = tournament.endDate
+         poster.value = tournament.poster
+    }
+
 }

@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.Button
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,7 +20,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
-
 @Composable
 fun PickImageFromGallery(createTournamentViewModel: CreateTournamentViewModel) {
 
@@ -64,6 +64,17 @@ fun PickImageFromGallery(createTournamentViewModel: CreateTournamentViewModel) {
         }
     }
 
+    if (!createTournamentViewModel.validatePoster.value) {
+        Text(
+            text = createTournamentViewModel.validatePosterError,
+            color = MaterialTheme.colors.error,
+            style = MaterialTheme.typography.caption,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .offset(y = (-8).dp)
+                .fillMaxWidth(0.9f)
+        )
+    }
     Button(onClick = { launcher.launch("image/*") }) {
         Text(text = "Cartel del Torneo")
     }

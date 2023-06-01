@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -12,13 +11,10 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.padeltournaments.presentation.navigation.NavigationScreens
-
 @Composable
 fun BottomBar(navController: NavHostController , screens : List<NavigationScreens>) {
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-
 
     BottomNavigation(elevation = 10.dp) {
         screens.forEach { screen ->
@@ -30,14 +26,12 @@ fun BottomBar(navController: NavHostController , screens : List<NavigationScreen
         }
     }
 }
-
 @Composable
 fun RowScope.AddItem(
     screen: NavigationScreens,
     currentDestination: NavDestination?,
     navController: NavHostController
 ) {
-
     BottomNavigationItem(
         label = {
             Text(text = screen.title)

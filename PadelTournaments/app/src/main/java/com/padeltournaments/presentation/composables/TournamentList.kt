@@ -5,7 +5,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.padeltournaments.data.entities.TournamentEntity
-
 @Composable
 fun TournamentList(navController: NavHostController,
                    isOrganizer : Boolean,

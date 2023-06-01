@@ -5,7 +5,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
-
 sealed class NavigationScreens(
     val route: String,
     val title: String,

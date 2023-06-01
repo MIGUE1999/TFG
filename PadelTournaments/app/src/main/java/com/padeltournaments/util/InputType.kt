@@ -11,7 +11,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-
 sealed class InputType(val label:String,
                        val icon: ImageVector?,
                        val keyboardOptions: KeyboardOptions,

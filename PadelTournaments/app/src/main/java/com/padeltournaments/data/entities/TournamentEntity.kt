@@ -3,7 +3,6 @@ package com.padeltournaments.data.entities
 import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
 @Entity(tableName = "tournament")
 data class TournamentEntity(
     @PrimaryKey(autoGenerate = true)
@@ -13,9 +12,8 @@ data class TournamentEntity(
     val inscriptionCost: String,
     val startDate: String,
     val endDate: String,
-    val registrationDeadline : String,
     val prize: String,
-    val poster: Bitmap?,
+    val poster: Bitmap? = null,
 
     val idOrganizer : Int
     //idReserva

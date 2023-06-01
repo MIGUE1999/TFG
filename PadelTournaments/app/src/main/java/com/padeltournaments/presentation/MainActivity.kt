@@ -7,7 +7,6 @@ import androidx.compose.material.MaterialTheme
 import com.padeltournaments.R
 import com.padeltournaments.presentation.navigation.*
 import dagger.hilt.android.AndroidEntryPoint
-
 @AndroidEntryPoint
 class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +15,6 @@ class MainActivity: ComponentActivity() {
             MaterialTheme {
                 window.navigationBarColor = resources.getColor(R.color.purple_500)
                 BottomNavGraph()
-
             }
         }
     }

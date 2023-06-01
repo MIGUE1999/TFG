@@ -6,18 +6,16 @@ import androidx.room.TypeConverters
 import com.padeltournaments.data.dao.*
 import com.padeltournaments.data.entities.*
 import com.padeltournaments.util.Converters
-
 @Database(entities = [UserEntity::class, PlayerEntity::class, OrganizerEntity::class,
     TournamentEntity::class, CourtEntity::class,
     InscriptionEntity::class, BookingEntity::class,
     //OrganizatorWithTournaments::class
 ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
-
     abstract val userDao : UserDao
     abstract val tournamentDao : TournamentDao
     abstract val playerDao : PlayerDao

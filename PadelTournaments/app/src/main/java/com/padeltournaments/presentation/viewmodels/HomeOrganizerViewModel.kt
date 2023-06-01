@@ -16,23 +16,11 @@ import javax.inject.Inject
 class HomeOrganizerViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
 ) : ViewModel() {
-
     val tournamentsByOrganizer : MutableState<List<TournamentEntity>> = mutableStateOf(listOf())
 
     fun getTournamentByOrgId(orgId:Int) : Flow<List<TournamentEntity>> {
             return tournamentRepository.getTournamentsByOrgId(orgId)
     }
-
-
-    /*
-    fun getTournamentByOrgId(orgId:Int) {
-        tournamentRepository.getTournamentsByOrgId(orgId).let{ tournamentsByOrg ->
-            tournamentsByOrganizer.value = tournamentsByOrg
-        }
-    }
-
-    */
-
     fun deleteTournament(tournament : TournamentEntity){
         viewModelScope.launch(Dispatchers.IO) {
             tournamentRepository.deleteTournament(tournament)

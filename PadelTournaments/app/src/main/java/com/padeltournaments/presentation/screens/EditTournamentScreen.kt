@@ -6,8 +6,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Button
+import androidx.compose.material.RadioButton
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -25,10 +28,11 @@ import com.padeltournaments.presentation.composables.CustomTextInput
 import com.padeltournaments.presentation.composables.PickImageFromGallery
 import com.padeltournaments.presentation.composables.showDatePicker
 import com.padeltournaments.presentation.navigation.NavigationScreens
-import com.padeltournaments.util.*
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
+import com.padeltournaments.util.*
+
 @Composable
-fun CreateTournamentScreen(context : Context,
+fun EditTournamentScreen(context : Context,
                            navController: NavController,
                            session : LoginPref,
                            createTournamentViewModel: CreateTournamentViewModel = hiltViewModel()
@@ -45,7 +49,7 @@ fun CreateTournamentScreen(context : Context,
             verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Crear Torneo", fontSize = 40.sp)
+            Text(text = "Editar Torneo", fontSize = 40.sp)
 
             CustomTextInput(
                 value = createTournamentViewModel.nameTournament.value,
@@ -76,6 +80,7 @@ fun CreateTournamentScreen(context : Context,
                     onNext = {focusManager.moveFocus(FocusDirection.Down)}
                 )
             )
+
             CustomTextInput(
                 value = createTournamentViewModel.prizeTournament.value,
                 onValueChange = {createTournamentViewModel.onPrizeChanged(it) },
@@ -92,9 +97,12 @@ fun CreateTournamentScreen(context : Context,
             )
 
             Text(text = "Seleccione Categoria")
+            val selectedCategory = remember{
+                createTournamentViewModel.category.value
+            }
             Row {
                 RadioButton(
-                    selected = createTournamentViewModel.category.value == Category.first,
+                    selected = selectedCategory == Category.first,
                     onClick =
                     {
                         createTournamentViewModel.onCategoryChanged(Category.first)
@@ -105,7 +113,7 @@ fun CreateTournamentScreen(context : Context,
                 Spacer(modifier = Modifier.size(16.dp))
 
                 RadioButton(
-                    selected = createTournamentViewModel.category.value == Category.second,
+                    selected = selectedCategory == Category.second,
                     onClick =
                     {
                         createTournamentViewModel.onCategoryChanged(Category.second)
@@ -116,7 +124,7 @@ fun CreateTournamentScreen(context : Context,
                 Spacer(modifier = Modifier.size(16.dp))
 
                 RadioButton(
-                    selected = createTournamentViewModel.category.value == Category.third,
+                    selected = selectedCategory == Category.third,
                     onClick =
                     {
                         createTournamentViewModel.onCategoryChanged(Category.third)
@@ -130,20 +138,17 @@ fun CreateTournamentScreen(context : Context,
             showDatePicker(context,
                 TOURNAMENT_STARTED_DATE,
                 TOURNAMENT_END_DATE,
-                createTournamentViewModel = createTournamentViewModel,
-                showError = !createTournamentViewModel.validateDate.value,
-                errorMessage = createTournamentViewModel.validateDateError,
+                createTournamentViewModel = createTournamentViewModel
             )
 
             PickImageFromGallery(createTournamentViewModel)
 
             Button(onClick = {
-                if (createTournamentViewModel.validateData()) {
-                    session.getUserDetails()[LoginPref.KEY_ORG_ID]?.let {
-                        val idOrg = it.toInt()
-                        createTournamentViewModel.createTournament(idOrg)
-                        navController.navigate(NavigationScreens.HomeOrganizer.route)
-                    }
+                session.getUserDetails()[LoginPref.KEY_ORG_ID]?.let {
+                    var idOrg = session.getUserDetails()[LoginPref.KEY_ORG_ID]!!.toInt()
+
+                    createTournamentViewModel.updateTournament(idOrg)
+                    navController.navigate(NavigationScreens.HomeOrganizer.route)
                 }
             }, modifier = Modifier
                 .fillMaxWidth()

@@ -11,7 +11,7 @@ interface OrganizerDao {
     fun getAllOrganizers() : LiveData<List<OrganizerEntity>>
 
     @Query("SELECT * FROM organizer WHERE id = :idOrganizer")
-    fun getOrganizerById(idOrganizer: Int) : OrganizerEntity
+    fun getOrganizerById(idOrganizer: Int) : OrganizerEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrganizer(organizerEntity: OrganizerEntity)

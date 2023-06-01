@@ -1,54 +1,49 @@
 package com.padeltournaments.presentation.screens
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusOrder
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.padeltournaments.data.entities.UserEntity
+import com.padeltournaments.presentation.composables.CustomTextInput
 import com.padeltournaments.presentation.navigation.NavigationScreens
-import com.padeltournaments.presentation.theme.Shapes
 import com.padeltournaments.presentation.viewmodels.LoginViewModel
-import com.padeltournaments.util.InputType
 import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.Rol
-
 @Composable
 fun LoginScreen(loginViewModel : LoginViewModel = hiltViewModel(),
                 navController: NavController,
                 session:LoginPref
 )
 {
-    val passwordFocusRequester = FocusRequester()
     val focusManager: FocusManager = LocalFocusManager.current
-    val lifecycleOwner = LocalLifecycleOwner.current
 
-    loginViewModel.userLogged.observe(lifecycleOwner) { user ->
-        if(user != null) {
+    fun onCheckUserFinish(user: UserEntity) {
             loginViewModel.setSession(user, session)
             if(user.rol == Rol.organizer){
                 navController.navigate(NavigationScreens.HomeOrganizer.route)
             }
             else{
-                navController.navigate(NavigationScreens.HomePlayer.route)
-            }
-        }
+                    navController.navigate(NavigationScreens.HomePlayer.route)
+                }
     }
 
     Column(
@@ -65,18 +60,47 @@ fun LoginScreen(loginViewModel : LoginViewModel = hiltViewModel(),
             fontWeight = FontWeight.Bold,
             modifier=Modifier.padding(bottom = 30.dp) )
 
-        TextInputLogin(InputType.Email, keyboardActions = KeyboardActions(onNext = {
-            passwordFocusRequester.requestFocus()
-        }), loginViewModel = loginViewModel)
+        CustomTextInput(
+            value = loginViewModel.emailUser.value,
+            onValueChange = {loginViewModel.onEmailChanged(it) },
+            label = "Email",
+            showError = !loginViewModel.validateEmail.value,
+            errorMessage = loginViewModel.validateEmailError,
+            leadingIconImageVector = Icons.Default.Person,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {focusManager.moveFocus(FocusDirection.Down)}
+            )
+        )
 
-        TextInputLogin(InputType.Password, keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
-        }), focusRequester = passwordFocusRequester,
-            loginViewModel = loginViewModel
+        CustomTextInput(
+            value = loginViewModel.passwordUser.value,
+            onValueChange = {loginViewModel.onPasswordChanged(it) },
+            label = "Contraseña",
+            showError = !loginViewModel.validatePassword.value,
+            errorMessage = loginViewModel.validatePasswordError,
+            isPasswordField = true,
+            isPasswordVisible = loginViewModel.isPasswordVisible.value,
+            onVisibilityChange = { loginViewModel.isPasswordVisible.value = it},
+            leadingIconImageVector = Icons.Default.Lock,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {focusManager.clearFocus()}
+            )
         )
 
         Button(onClick = {
-            loginViewModel.checkLoginCredentials()
+            if(loginViewModel.validateData()) {
+                loginViewModel.checkLoginCredentials{ user ->
+                    onCheckUserFinish(user)
+                }
+            }
         },
             modifier = Modifier.fillMaxWidth()) {
             Text("Iniciar Sesion", Modifier.padding(vertical = 8.dp))
@@ -94,72 +118,5 @@ fun LoginScreen(loginViewModel : LoginViewModel = hiltViewModel(),
                 Text("Registrate")
             }
         }
-    }
-}
-
-@Composable
-fun TextInputLogin(
-    inputType: InputType,
-    focusRequester: FocusRequester? = null,
-    keyboardActions: KeyboardActions,
-    loginViewModel: LoginViewModel
-) {
-
-    val value : String
-
-    if (inputType != InputType.Password ) {
-        value = loginViewModel.emailUser.value
-        TextField(
-            value = value,
-            onValueChange = { inputValue ->
-                loginViewModel.onEmailChanged(inputValue)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusOrder(focusRequester ?: FocusRequester()),
-            leadingIcon = {
-                if (inputType.icon != null)
-                    Icon(imageVector = inputType.icon, null)
-            },
-            label = { Text(text = inputType.label) },
-            singleLine = true,
-            shape = Shapes.small,
-            keyboardOptions = inputType.keyboardOptions,
-            visualTransformation = inputType.visualTransformation,
-            keyboardActions = keyboardActions
-        )
-    } else {
-        var passwordVisibility by remember { mutableStateOf(false) }
-
-        val icon = if (passwordVisibility)
-            painterResource(id = com.google.android.material.R.drawable.design_ic_visibility)
-        else
-            painterResource(id = com.google.android.material.R.drawable.design_ic_visibility_off)
-
-        value = loginViewModel.passwordUser.value
-        TextField(
-            value = value,
-            onValueChange = {inputValue ->
-                loginViewModel.onPasswordChanged(inputValue) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusOrder(focusRequester ?: FocusRequester()),
-            leadingIcon = {
-                if (inputType.icon != null)
-                    Icon(imageVector = inputType.icon, null)
-            },
-            label = { Text(text = inputType.label) },
-            singleLine = true,
-            shape = Shapes.small,
-            keyboardOptions = inputType.keyboardOptions,
-            keyboardActions = keyboardActions,
-            trailingIcon = {
-                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
-                    Icon(painter = icon, contentDescription = "Visibility Icon")
-                }
-            },
-            visualTransformation = if (passwordVisibility) VisualTransformation.None
-            else PasswordVisualTransformation()
-        )
     }
 }
