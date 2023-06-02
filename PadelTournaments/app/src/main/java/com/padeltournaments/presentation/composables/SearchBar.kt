@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.padeltournaments.data.entities.TournamentEntity
 import com.padeltournaments.presentation.viewmodels.SearchViewModel
 
@@ -61,11 +62,13 @@ fun SearchBar(searchViewModel: SearchViewModel,
 }
 
 @Composable
-fun FilterLazyRow() {
+fun FilterLazyRow(searchViewModel: SearchViewModel = hiltViewModel(),
+                  allTournaments: List<TournamentEntity>
+                  ) {
     val categories = listOf(
-        listOf("All", "Books", "Electronics", "Clothing", "Home"),
-        listOf("All", "Fiction", "Non-Fiction", "Children's Books"),
-        listOf("All", "Phones", "Laptops", "Tablets", "TVs")
+        listOf("Primera", "Segunda", "Tercera"),
+        listOf("De mas caro a mas barato", "De mas barato a mas caro"),
+        listOf("De mas caro a mas barato", "De mas barato a mas caro")
     )
 
     val defaultSelected = listOf("Categoria", "Precio", "Premio")
@@ -84,7 +87,9 @@ fun FilterLazyRow() {
                     modifier = Modifier.fillMaxWidth(),
                     onSelected = { selectedIndex ->
                         selectedCategories[index] = categories[index][selectedIndex]
-                    }
+                    },
+                    searchViewModel = searchViewModel,
+                    allTournaments = allTournaments
                 )
             }
         }
@@ -98,6 +103,8 @@ fun CustomDropdownMenu(
     color: Color, // Color
     modifier: Modifier, //
     onSelected: (Int) -> Unit, // Pass the Selected Option
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    allTournaments: List<TournamentEntity>
 ) {
     var selectedIndex by remember { mutableStateOf(0) }
     var expand by remember { mutableStateOf(false) }
@@ -142,6 +149,7 @@ fun CustomDropdownMenu(
                         expand = false
                         stroke = if (expand) 2 else 1
                         onSelected(selectedIndex)
+                        searchViewModel.filterTournamentByCategory(allTournaments, list[selectedIndex])
                     }
                 ) {
                     Text(

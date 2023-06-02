@@ -1,7 +1,6 @@
 package com.padeltournaments.presentation.viewmodels
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
@@ -16,8 +15,6 @@ import javax.inject.Inject
 class HomeOrganizerViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
 ) : ViewModel() {
-    val tournamentsByOrganizer : MutableState<List<TournamentEntity>> = mutableStateOf(listOf())
-
     fun getTournamentByOrgId(orgId:Int) : Flow<List<TournamentEntity>> {
             return tournamentRepository.getTournamentsByOrgId(orgId)
     }

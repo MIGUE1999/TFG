@@ -13,6 +13,8 @@ interface TournamentDao  {
     fun getAllTournamentsStatic(): List<TournamentEntity>
     @Query("SELECT * FROM tournament WHERE id = :idTournament")
     fun getById(idTournament: Int) : LiveData<TournamentEntity>
+    @Query("SELECT * FROM tournament WHERE id = :idTournament")
+    fun getTournamentById(idTournament: Int) : TournamentEntity
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTournament(tournamentEntity: TournamentEntity)
     @Insert(onConflict = OnConflictStrategy.REPLACE)

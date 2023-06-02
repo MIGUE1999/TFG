@@ -52,9 +52,11 @@ class CreateTournamentViewModel @Inject constructor(
             tournamentRepository.insertTournament(tournament)
         }
     }
-    fun updateTournament(idOrg: Int){
+    fun updateTournament(idTournament: Int, idOrg: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val updatedTournament = TournamentEntity(name = nameTournament.value,
+            val updatedTournament = TournamentEntity(
+                id = idTournament,
+                name = nameTournament.value,
                 inscriptionCost = inscriptionCost.value,
                 prize = prizeTournament.value,
                 category = category.value,
@@ -109,7 +111,7 @@ class CreateTournamentViewModel @Inject constructor(
     fun onCartelChanged(img: Bitmap){
         this.poster.value = img
     }
-    fun setTournament(tournament: TournamentEntity){
+    private fun setTournament(tournament: TournamentEntity){
          nameTournament.value = tournament.name
          inscriptionCost.value = tournament.inscriptionCost
          prizeTournament.value = tournament.prize
@@ -117,6 +119,13 @@ class CreateTournamentViewModel @Inject constructor(
          dateIni.value = tournament.startDate
          dateEnd.value = tournament.endDate
          poster.value = tournament.poster
+    }
+
+    fun setTournamentById(idTournament: Int){
+        viewModelScope.launch(Dispatchers.IO) {
+             val tournament = tournamentRepository.getTournamentByIdStatic(idTournament)
+             setTournament(tournament = tournament)
+        }
     }
 
 }

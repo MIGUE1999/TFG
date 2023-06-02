@@ -51,10 +51,8 @@ fun TournamentCard(isOrganizer : Boolean,
                         ClickableText(text = AnnotatedString(tournament.name),
                             style = MaterialTheme.typography.h5,
                             onClick = {
-                                Log.d("ClickableText", "SE METE EN EL ONCLICK")
-                                //tournamentViewModel.onActualTournamentChanged(tournament)
-                                //tournamentViewModel.getTournamentAtributes(tournament)
-                                navController.navigate(NavigationScreens.TournamentDetail.route)
+                                val idTournament = tournament.id.toString()
+                                navController.navigate("tournament_detail/$idTournament")
                             })
                         Text("Fecha de inicio: " + tournament.startDate)
                         Text("Fecha de finalizacion:" + tournament.endDate)
@@ -63,10 +61,8 @@ fun TournamentCard(isOrganizer : Boolean,
                     }
                     if (isOrganizer) {
                         IconButton(onClick = {
-                            //tournamentViewModel.onActualTournamentChanged(tournament)
-                            //tournamentViewModel.getTournamentAtributes(tournament)
-                            createTournamentViewModel.setTournament(tournament)
-                            navController.navigate(NavigationScreens.EditTournament.route)
+                            val idTournament = tournament.id.toString()
+                            navController.navigate("edit_tournament/$idTournament")
                         }) {
                             Icon(Icons.Filled.Edit, "EditTournament")
                         }

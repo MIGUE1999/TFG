@@ -61,15 +61,20 @@ class SearchViewModel @Inject constructor(
                 filteredCategoriesListValue.add(tournament)
             }
         }
+        _filteredList.value = filteredCategoriesListValue.toList()
+        setIsFiltering(true)
     }
 
     fun filterTournamentByPrize(allTournaments : List<TournamentEntity>, prize: String) {
+
         filteredCategoriesListValue.clear()
+
         allTournaments.forEach { tournament ->
-            if (tournament.category == prize) {
+            if (tournament.prize == prize) {
                 filteredCategoriesListValue.add(tournament)
             }
         }
+        setIsFiltering(true)
     }
 
     fun filterTournamentByCost(allTournaments : List<TournamentEntity>, cost: String) {

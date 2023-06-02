@@ -12,6 +12,9 @@ class TournamentRepositoryImpl @Inject constructor(private val tournamentDao:Tou
     override fun getTournamentById(idTournament: Int): LiveData<TournamentEntity> {
         return tournamentDao.getById(idTournament)
     }
+    override fun getTournamentByIdStatic(idTournament: Int): TournamentEntity {
+        return tournamentDao.getTournamentById(idTournament)
+    }
     override suspend fun insertTournament(tournamentEntity: TournamentEntity) {
         tournamentDao.insertTournament(tournamentEntity)
     }

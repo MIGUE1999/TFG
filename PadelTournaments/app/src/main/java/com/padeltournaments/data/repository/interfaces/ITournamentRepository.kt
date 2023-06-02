@@ -8,6 +8,7 @@ interface ITournamentRepository {
     fun getAllTournamentsStatic() : List<TournamentEntity>
     fun getAllTournaments() : Flow<List<TournamentEntity>>
     fun getTournamentById(idTournament: Int) : LiveData<TournamentEntity>
+    fun getTournamentByIdStatic(idTournament: Int) : TournamentEntity
     suspend fun insertTournament(tournamentEntity: TournamentEntity)
     suspend fun insertTournaments(tournamentEntities: List<TournamentEntity>)
     suspend fun updateTournament(tournamentEntity: TournamentEntity)

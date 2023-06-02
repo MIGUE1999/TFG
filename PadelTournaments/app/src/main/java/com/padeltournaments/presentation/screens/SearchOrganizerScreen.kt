@@ -46,7 +46,7 @@ fun SearchContent(navController: NavHostController,
             .fillMaxWidth())
     {
         SearchBar(tournaments = tournaments, searchViewModel = searchViewModel)
-        FilterLazyRow()
+        FilterLazyRow(searchViewModel, tournaments)
         Spacer()
         if (isFiltering == true)
             TournamentList(isOrganizer = true, navController = navController, tournaments = tournamentsFiltered)

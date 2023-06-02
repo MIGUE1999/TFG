@@ -10,6 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,9 +36,15 @@ import com.padeltournaments.util.*
 fun EditTournamentScreen(context : Context,
                            navController: NavController,
                            session : LoginPref,
-                           createTournamentViewModel: CreateTournamentViewModel = hiltViewModel()
+                           createTournamentViewModel: CreateTournamentViewModel = hiltViewModel(),
+                           idTournament: String?
 ){
     val focusManager: FocusManager = LocalFocusManager.current
+    LaunchedEffect(idTournament) {
+        if (idTournament != null) {
+            createTournamentViewModel.setTournamentById(idTournament.toInt())
+        }
+    }
 
     ProvideWindowInsets {
         Column(
@@ -146,14 +153,15 @@ fun EditTournamentScreen(context : Context,
             Button(onClick = {
                 session.getUserDetails()[LoginPref.KEY_ORG_ID]?.let {
                     var idOrg = session.getUserDetails()[LoginPref.KEY_ORG_ID]!!.toInt()
-
-                    createTournamentViewModel.updateTournament(idOrg)
+                    if (idTournament != null) {
+                        createTournamentViewModel.updateTournament(idTournament.toInt(), idOrg)
+                    }
                     navController.navigate(NavigationScreens.HomeOrganizer.route)
                 }
             }, modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)) {
-                Text(text = "Crear Torneo")
+                Text(text = "Editar Torneo")
             }
         }
     }

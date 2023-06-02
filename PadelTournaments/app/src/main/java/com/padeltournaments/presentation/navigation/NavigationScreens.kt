@@ -45,7 +45,7 @@ sealed class NavigationScreens(
         title = "CreateTournament",
     )
     object EditTournament : NavigationScreens(
-        route = "edit_tournament",
+        route = "edit_tournament/{idTournament}",
         title = "EditTournament",
     )
     object LogIn : NavigationScreens(
@@ -57,7 +57,7 @@ sealed class NavigationScreens(
         title = "SignUp",
     )
     object TournamentDetail : NavigationScreens(
-        route = "tournament_detail",
+        route = "tournament_detail/{idTournament}",
         title = "TournamentDetail",
     )
 }
