@@ -62,13 +62,14 @@ fun SearchBar(searchViewModel: SearchViewModel,
 }
 
 @Composable
-fun FilterLazyRow(searchViewModel: SearchViewModel = hiltViewModel(),
-                  allTournaments: List<TournamentEntity>
-                  ) {
+fun FilterLazyRow(
+    searchViewModel: SearchViewModel = hiltViewModel(),
+    allTournaments: List<TournamentEntity>
+) {
     val categories = listOf(
         listOf("Primera", "Segunda", "Tercera"),
         listOf("De mas caro a mas barato", "De mas barato a mas caro"),
-        listOf("De mas caro a mas barato", "De mas barato a mas caro")
+        listOf("De mayor a menor", "De menor a mayor")
     )
 
     val defaultSelected = listOf("Categoria", "Precio", "Premio")
@@ -77,7 +78,7 @@ fun FilterLazyRow(searchViewModel: SearchViewModel = hiltViewModel(),
         mutableStateListOf(*defaultSelected.toTypedArray())
     }
 
-    LazyRow (modifier = Modifier.fillMaxWidth(0.96f)){
+    LazyRow(modifier = Modifier.fillMaxWidth(0.96f)) {
         items(defaultSelected.size) { index ->
             Column() {
                 CustomDropdownMenu(
@@ -85,8 +86,22 @@ fun FilterLazyRow(searchViewModel: SearchViewModel = hiltViewModel(),
                     defaultSelected = selectedCategories[index],
                     color = Color.Black,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelected = { selectedIndex ->
-                        selectedCategories[index] = categories[index][selectedIndex]
+                    onSelected = { selectedItem ->
+                        selectedCategories[index] = selectedItem
+                        if (selectedItem != defaultSelected[index]) {
+                            when (index) {
+                                0 -> searchViewModel.categoryVal = selectedItem
+                                1 -> searchViewModel.cost = selectedItem
+                                2 -> searchViewModel.prize = selectedItem
+                            }
+                        }
+                        searchViewModel.filterCombineFilters(
+                            allTournaments,
+                            searchViewModel.categoryVal,
+                            searchViewModel.prize,
+                            searchViewModel.cost
+                        )
+                        searchViewModel.setIsFiltering(true)
                     },
                     searchViewModel = searchViewModel,
                     allTournaments = allTournaments
@@ -98,17 +113,17 @@ fun FilterLazyRow(searchViewModel: SearchViewModel = hiltViewModel(),
 
 @Composable
 fun CustomDropdownMenu(
-    list: List<String>, // Menu Options
-    defaultSelected: String, // Default Selected Option on load
-    color: Color, // Color
-    modifier: Modifier, //
-    onSelected: (Int) -> Unit, // Pass the Selected Option
+    list: List<String>,
+    defaultSelected: String,
+    color: Color,
+    modifier: Modifier,
+    onSelected: (String) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel(),
     allTournaments: List<TournamentEntity>
 ) {
-    var selectedIndex by remember { mutableStateOf(0) }
     var expand by remember { mutableStateOf(false) }
     var stroke by remember { mutableStateOf(1) }
+
     Box(
         modifier
             .padding(top = 4.dp, end = 4.dp)
@@ -142,14 +157,12 @@ fun CustomDropdownMenu(
                 .padding(2.dp)
                 .fillMaxWidth(.4f)
         ) {
-            list.forEachIndexed { index, item ->
+            list.forEach { item ->
                 DropdownMenuItem(
                     onClick = {
-                        selectedIndex = index
+                        onSelected(item)
                         expand = false
                         stroke = if (expand) 2 else 1
-                        onSelected(selectedIndex)
-                        searchViewModel.filterTournamentByCategory(allTournaments, list[selectedIndex])
                     }
                 ) {
                     Text(

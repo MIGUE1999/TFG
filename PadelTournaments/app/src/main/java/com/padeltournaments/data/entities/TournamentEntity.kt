@@ -9,10 +9,10 @@ data class TournamentEntity(
     val id: Int = 0,
     val name: String,
     val category: String,
-    val inscriptionCost: String,
+    val inscriptionCost: Int,
     val startDate: String,
     val endDate: String,
-    val prize: String,
+    val prize: Int,
     val poster: Bitmap? = null,
 
     val idOrganizer : Int

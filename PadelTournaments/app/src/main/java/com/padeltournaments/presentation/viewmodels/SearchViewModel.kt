@@ -16,6 +16,12 @@ class SearchViewModel @Inject constructor(
 
     private val filteredListValue = ArrayList<TournamentEntity>()
     private val filteredCategoriesListValue = ArrayList<TournamentEntity>()
+    private var filteredPrizeListValue = ArrayList<TournamentEntity>()
+    private var filteredCostListValue = ArrayList<TournamentEntity>()
+
+    var categoryVal: String? = null
+    var prize: String? = null
+    var cost: String? = null
 
     private val _filteredList = MutableLiveData<List<TournamentEntity>>()
     val filteredList: LiveData<List<TournamentEntity>> get() = _filteredList
@@ -54,7 +60,31 @@ class SearchViewModel @Inject constructor(
          }
     }
 
-    fun filterTournamentByCategory(allTournaments : List<TournamentEntity>, category: String) {
+
+    fun filterCombineFilters(allTournaments : List<TournamentEntity>, category: String?, prize: String?, cost: String?) {
+        _filteredList.value = emptyList()
+        if (category != null){
+            filterTournamentByCategory(allTournaments, category)
+            if (prize != null){
+                filterTournamentByPrize(_filteredList.value!!, prize)
+                if (cost != null){
+                    filterTournamentByCost(_filteredList.value!!, cost)
+                }
+            } else if (cost != null){
+                filterTournamentByCost(_filteredList.value!!, cost)
+            }
+        } else if(prize != null) {
+            filterTournamentByPrize(allTournaments, prize)
+            if (cost != null){
+                filterTournamentByCost(_filteredList.value!!, cost)
+            }
+        } else if(cost != null){
+            filterTournamentByCost(allTournaments, cost)
+        }
+        else { _filteredList.value = allTournaments}
+    }
+
+    private fun filterTournamentByCategory(allTournaments : List<TournamentEntity>, category: String) {
         filteredCategoriesListValue.clear()
         allTournaments.forEach { tournament ->
             if (tournament.category == category) {
@@ -62,30 +92,29 @@ class SearchViewModel @Inject constructor(
             }
         }
         _filteredList.value = filteredCategoriesListValue.toList()
-        setIsFiltering(true)
+        //setIsFiltering(true)
     }
 
-    fun filterTournamentByPrize(allTournaments : List<TournamentEntity>, prize: String) {
-
-        filteredCategoriesListValue.clear()
-
-        allTournaments.forEach { tournament ->
-            if (tournament.prize == prize) {
-                filteredCategoriesListValue.add(tournament)
-            }
+    private fun filterTournamentByPrize(allTournaments : List<TournamentEntity>, prize: String) {
+        filteredPrizeListValue.clear()
+        filteredPrizeListValue = when (prize) {
+            "De mayor a menor" -> ArrayList(allTournaments.sortedByDescending { it.prize })
+            "De menor a mayor" -> ArrayList(allTournaments.sortedBy { it.prize })
+            else -> ArrayList(allTournaments) // Orden predeterminado si no coincide con ninguna opción
         }
-        setIsFiltering(true)
+        _filteredList.value = filteredPrizeListValue
+        //setIsFiltering(true)
     }
-
-    fun filterTournamentByCost(allTournaments : List<TournamentEntity>, cost: String) {
-        filteredCategoriesListValue.clear()
-        allTournaments.forEach { tournament ->
-            if (tournament.category == cost) {
-                filteredCategoriesListValue.add(tournament)
-            }
+    private fun filterTournamentByCost(allTournaments : List<TournamentEntity>, cost: String) {
+        filteredCostListValue.clear()
+        filteredCostListValue = when (cost) {
+            "De mas caro a mas barato" -> ArrayList(allTournaments.sortedByDescending { it.inscriptionCost })
+            "De mas barato a mas caro" -> ArrayList(allTournaments.sortedBy { it.inscriptionCost })
+            else -> ArrayList(allTournaments) // Orden predeterminado si no coincide con ninguna opción
         }
+        _filteredList.value = filteredCostListValue
+        //setIsFiltering(true)
     }
-
     fun filterTournamentByLocation(allTournaments : List<TournamentEntity>, location: String) {
         filteredCategoriesListValue.clear()
         allTournaments.forEach { tournament ->
@@ -94,7 +123,6 @@ class SearchViewModel @Inject constructor(
             }
         }
     }
-
     fun setIsFiltering(isFiltering: Boolean){
         _isFiltering.value = isFiltering
     }

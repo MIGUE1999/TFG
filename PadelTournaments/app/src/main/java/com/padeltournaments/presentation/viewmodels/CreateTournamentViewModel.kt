@@ -37,8 +37,8 @@ class CreateTournamentViewModel @Inject constructor(
     val validatePosterError = "Introduzca el cartel del torneo"
     fun createTournament(idOrg: Int){
         val newTournament = TournamentEntity(name = nameTournament.value,
-            inscriptionCost = inscriptionCost.value,
-            prize = prizeTournament.value,
+            inscriptionCost = inscriptionCost.value.toInt(),
+            prize = prizeTournament.value.toInt(),
             category = category.value,
             startDate = dateIni.value,
             endDate = dateEnd.value,
@@ -57,8 +57,8 @@ class CreateTournamentViewModel @Inject constructor(
             val updatedTournament = TournamentEntity(
                 id = idTournament,
                 name = nameTournament.value,
-                inscriptionCost = inscriptionCost.value,
-                prize = prizeTournament.value,
+                inscriptionCost = inscriptionCost.value.toInt(),
+                prize = prizeTournament.value.toInt(),
                 category = category.value,
                 startDate = dateIni.value,
                 endDate = dateEnd.value,
@@ -113,8 +113,8 @@ class CreateTournamentViewModel @Inject constructor(
     }
     private fun setTournament(tournament: TournamentEntity){
          nameTournament.value = tournament.name
-         inscriptionCost.value = tournament.inscriptionCost
-         prizeTournament.value = tournament.prize
+         inscriptionCost.value = tournament.inscriptionCost.toString()
+         prizeTournament.value = tournament.prize.toString()
          category.value = tournament.category
          dateIni.value = tournament.startDate
          dateEnd.value = tournament.endDate
