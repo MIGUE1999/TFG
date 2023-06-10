@@ -30,7 +30,7 @@ class TournamentRepositoryImpl @Inject constructor(private val tournamentDao:Tou
     override suspend fun deleteTournaments(tournamentEntities: List<TournamentEntity>) {
         tournamentDao.deleteTournaments(tournamentEntities)
     }
-    override fun getTournamentsByOrgId(idOrg : Int): Flow<List<TournamentEntity>> {
+    override fun getTournamentsByOrgId(idOrg : Int): List<TournamentEntity> {
         return tournamentDao.getTournamentsByOrgId(idOrg)
     }
 }

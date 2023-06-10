@@ -7,6 +7,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,15 +27,15 @@ fun HomeOrganizerScreen(session : LoginPref,
                         homeOrganizerViewModel : HomeOrganizerViewModel = hiltViewModel(),
                         navController : NavHostController)
 {
-    val orgId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
-    Log.d("HomeScreen", "IdOrg: $orgId")
+    val userId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
 
-    val tournamentsByOrgId = homeOrganizerViewModel.getTournamentByOrgId(orgId)
-        .collectAsState(initial = emptyList())
+    homeOrganizerViewModel.getOrganizerTournamentsByUserId(userId)
+
+    val tournaments by homeOrganizerViewModel.tournamentsFlow.collectAsState(initial = emptyList())
 
     Scaffold(topBar = { TopBar()},
              bottomBar = { BottomBar(navController = navController, organizerScreens) },
-             content = { HomeOrganizerContent(navController = navController, tournamentsByOrgId.value)},
+             content = { HomeOrganizerContent(navController = navController, tournaments)},
              floatingActionButton = { FAB(navController = navController) }
         )
 }
@@ -49,6 +50,8 @@ fun HomeOrganizerContent(navController: NavHostController, tournaments : List<To
         TournamentList(isOrganizer = true, navController = navController, tournaments = tournaments)
     }
 }
+
+
 
 
 

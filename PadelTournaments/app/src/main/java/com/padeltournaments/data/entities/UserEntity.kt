@@ -1,5 +1,6 @@
 package com.padeltournaments.data.entities
 
+import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -12,5 +13,6 @@ data class UserEntity(
     var email: String,
     var telephoneNumber: String,
     var surname: String,
-    var rol : String
+    var rol : String,
+    //val profileImage: Bitmap? = null
 )

@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.padeltournaments.data.entities.UserEntity
 import com.padeltournaments.presentation.composables.CustomTextInput
+import com.padeltournaments.presentation.composables.PickImageFromGallery
 import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.presentation.viewmodels.SignUpViewModel
 import com.padeltournaments.util.Rol

@@ -29,14 +29,15 @@ fun SearchOrganizerScreen(session : LoginPref,
 
     Scaffold(topBar = { TopBar()},
         bottomBar = { BottomBar(navController = navController, organizerScreens) },
-        content = { SearchContent(navController = navController, allTournaments.value, filteredList, searchViewModel) },
+        content = { SearchContent(navController = navController, allTournaments.value, filteredList, searchViewModel, isOrganizer = true) },
     )
 }
 @Composable
 fun SearchContent(navController: NavHostController,
                   tournaments : List<TournamentEntity>,
                   tournamentsFiltered : List<TournamentEntity>?,
-                  searchViewModel: SearchViewModel
+                  searchViewModel: SearchViewModel,
+                  isOrganizer: Boolean
 ) {
     val isFiltering by searchViewModel.isFiltering.observeAsState()
 
@@ -49,7 +50,7 @@ fun SearchContent(navController: NavHostController,
         FilterLazyRow(searchViewModel, tournaments)
         Spacer()
         if (isFiltering == true)
-            TournamentList(isOrganizer = true, navController = navController, tournaments = tournamentsFiltered)
-        else TournamentList(isOrganizer = true, navController = navController, tournaments = tournaments)
+            TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournamentsFiltered)
+        else TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournaments)
     }
 }

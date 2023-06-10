@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
+import com.padeltournaments.data.entities.relations.TournamentPlayerRelation
+import com.padeltournaments.data.repository.interfaces.ITournamentPlayerRelationRepository
 import com.padeltournaments.data.repository.interfaces.ITournamentRepository
 import com.padeltournaments.util.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateTournamentViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
+    private val tournamentPlayerRelationRepository: ITournamentPlayerRelationRepository
 ) : ViewModel() {
     val nameTournament = mutableStateOf("")
     val inscriptionCost = mutableStateOf("")
@@ -23,6 +26,7 @@ class CreateTournamentViewModel @Inject constructor(
     val dateIni = mutableStateOf("")
     val dateEnd = mutableStateOf("")
     val poster = mutableStateOf<Bitmap?>(null)
+    val enableInscription = mutableStateOf(true)
 
     val validateName = mutableStateOf(true)
     val validateInscriptionCost = mutableStateOf(true)
@@ -125,6 +129,13 @@ class CreateTournamentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
              val tournament = tournamentRepository.getTournamentByIdStatic(idTournament)
              setTournament(tournament = tournament)
+        }
+    }
+    //MARK: PlayerTournamentRelation operations
+    fun insertPlayerTournamentRelation(tournamentId: Int, playerId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val tournamentPlayerRelation = TournamentPlayerRelation(tournamentId = tournamentId, playerId = playerId)
+            tournamentPlayerRelationRepository.insert(tournamentPlayerRelation)
         }
     }
 

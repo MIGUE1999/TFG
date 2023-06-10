@@ -36,7 +36,10 @@ import com.padeltournaments.presentation.viewmodels.SignUpViewModel
 import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.playerScreens
 @Composable
-fun ProfilePlayerScreen(session : LoginPref, navController : NavHostController, signUpViewModel: SignUpViewModel = hiltViewModel()) {
+fun ProfilePlayerScreen(session : LoginPref,
+                        navController : NavHostController,
+                        signUpViewModel: SignUpViewModel = hiltViewModel()) {
+
     val userId = session.getUserDetails()[LoginPref.KEY_ID]
     val handler = Handler(Looper.getMainLooper())
     val delayMillis = 5

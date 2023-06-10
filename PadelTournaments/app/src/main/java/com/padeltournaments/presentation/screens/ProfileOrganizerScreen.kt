@@ -33,7 +33,10 @@ import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.LoginPref.Companion.KEY_ID
 import com.padeltournaments.util.organizerScreens
 @Composable
-fun ProfileOrganizerScreen(session : LoginPref, navController : NavHostController, signUpViewModel: SignUpViewModel = hiltViewModel()) {
+fun ProfileOrganizerScreen(session : LoginPref,
+                           navController : NavHostController,
+                           signUpViewModel: SignUpViewModel = hiltViewModel()) {
+
     val userId = session.getUserDetails()[KEY_ID]
     val handler = Handler(Looper.getMainLooper())
     val delayMillis = 5

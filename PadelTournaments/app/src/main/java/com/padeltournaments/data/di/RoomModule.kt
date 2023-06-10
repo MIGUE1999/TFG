@@ -60,4 +60,9 @@ object RoomModule {
     fun provideInscriptionRepository(db:AppDatabase) : IInscriptionRepository {
         return InscriptionRepositoryImpl(db.inscriptionDao)
     }
+    @Provides
+    @Singleton
+    fun provideTournamentPlayerRepository(db:AppDatabase) : ITournamentPlayerRelationRepository {
+        return TournamentPlayerRelationRepositoryImpl(db.tournamentPlayerRelationDao)
+    }
 }

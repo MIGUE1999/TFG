@@ -221,4 +221,5 @@ class SignUpViewModel @Inject constructor(
     private fun getPlayerByUserId(idUser: String): PlayerEntity?{
         return playerRepository.getPlayerByUserId(idUser.toInt())
     }
+
 }
