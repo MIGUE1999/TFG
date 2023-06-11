@@ -1,15 +1,11 @@
 package com.padeltournaments.presentation.composables
 
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,18 +20,26 @@ import com.padeltournaments.data.entities.UserEntity
 fun ProfilesBookedLazyRow(
     profiles: List<UserEntity>
 ) {
-    LazyRow {
+    LazyRow(modifier = Modifier.fillMaxWidth().background(color = Color.Red).height(150.dp)) {
         items(items = profiles) { profile ->
             Column(
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CircleProfileImage("url")
+                profile.photo?.let {
+                    RoundImage(
+                        image = it,
+                        modifier = Modifier
+                            .fillMaxHeight(0.7f)
+                            .weight(1f)
+                            .background(color = Color.Yellow)
+                    )
+                }
                 Text(
-                    text = profile.name,
+                    text = profile.name.uppercase()+ "\n" + profile.surname.uppercase(),
                     style = TextStyle(
-                        color = Color.White,
-                        fontSize = 12.sp,
+                        color = Color.Black,
+                        fontSize = 16.sp,
                         textAlign = TextAlign.Center
                     ),
                     modifier = Modifier.padding(top = 4.dp)
@@ -45,12 +49,5 @@ fun ProfilesBookedLazyRow(
     }
 }
 
-@Composable
-fun CircleProfileImage(imageUrl: String) {
-    Icon(
-        imageVector = Icons.Default.Person,
-        contentDescription = null,
-        tint = Color.White,
-        modifier = Modifier.size(40.dp)
-    )
-}
+
+
