@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.padeltournaments.data.entities.UserEntity
 import com.padeltournaments.presentation.composables.CustomTextInput
-import com.padeltournaments.presentation.composables.PickImageFromGallery
+import com.padeltournaments.presentation.composables.PickImageFromGalleryRoundedImage
 import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.presentation.viewmodels.SignUpViewModel
 import com.padeltournaments.util.Rol
@@ -45,6 +45,8 @@ fun SignUp(navController : NavController,
         Box(
             modifier = Modifier.padding(top = 5.dp)
         )
+
+        PickImageFromGalleryRoundedImage(signUpViewModel)
         CustomTextInput(
             value = signUpViewModel.nameUser.value,
             onValueChange = {signUpViewModel.onNameChanged(it) },
@@ -227,26 +229,28 @@ fun SignUp(navController : NavController,
             if(signUpViewModel.validateData()) {
                 when (signUpViewModel.rol.value) {
                     Rol.player -> {
-                        var usr = UserEntity(
+                        val usr = UserEntity(
                             name = signUpViewModel.nameUser.value,
                             surname = signUpViewModel.surnameUser.value,
                             telephoneNumber = signUpViewModel.tlfUser.value,
                             email = signUpViewModel.emailUser.value,
                             password = signUpViewModel.passwordUser.value,
-                            rol = Rol.player
+                            rol = Rol.player,
+                            photo = signUpViewModel.photo.value
                         )
 
                         signUpViewModel.insertPlayerByUser(usr)
                         navController.navigate(NavigationScreens.LogIn.route)
                     }
                     Rol.organizer -> {
-                        var usr = UserEntity(
+                        val usr = UserEntity(
                             name = signUpViewModel.nameUser.value,
                             surname = signUpViewModel.surnameUser.value,
                             telephoneNumber = signUpViewModel.tlfUser.value,
                             email = signUpViewModel.emailUser.value,
                             password = signUpViewModel.passwordUser.value,
-                            rol = Rol.organizer
+                            rol = Rol.organizer,
+                            photo = signUpViewModel.photo.value
                         )
 
                         signUpViewModel.insertOrganizerByUser(usr)

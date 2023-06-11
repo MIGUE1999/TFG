@@ -1,6 +1,6 @@
 package com.padeltournaments.presentation.composables
 
-import android.util.Log
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.padeltournaments.R
 import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.presentation.viewmodels.SignUpViewModel
 import com.padeltournaments.util.LoginPref
@@ -29,7 +27,7 @@ import com.padeltournaments.util.Rol
 @Composable
 fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpViewModel: SignUpViewModel) {
     Card(
-        elevation = 1.dp,
+        elevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(0.25f)
@@ -46,13 +44,15 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                 .border(width = 1.5.dp, color = Color.Black)) {
 
                 Spacer(modifier = Modifier.size(10.dp))
-                RoundImage(
-                    image = painterResource(id = R.drawable.ic_launcher_foreground),
-                    modifier = Modifier
-                        .fillMaxHeight(0.7f)
-                        .weight(1f)
-                        .background(color = Color.Yellow)
-                )
+                signUpViewModel.photo.value?.let {
+                    RoundImage(
+                        image = it,
+                        modifier = Modifier
+                            .fillMaxHeight(0.7f)
+                            .weight(1f)
+                            .background(color = Color.Yellow)
+                    )
+                }
 
                 Spacer(modifier = Modifier.size(10.dp))
 
@@ -91,10 +91,6 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                 ) {
                     IconButton(
                         onClick = {
-                            Log.d(
-                                "PROFILE SCREEN",
-                                "Id: " + session.getUserDetails().get(LoginPref.KEY_ID)
-                            )
                             session.logoutUser()
                             navController.navigate(NavigationScreens.LogIn.route)
                         },
@@ -144,10 +140,13 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
 }
 @Composable
 fun RoundImage(
-    image : Painter,
-    modifier : Modifier = Modifier
-){
-    Image(painter = image,
+    image: Bitmap,
+    modifier: Modifier = Modifier
+) {
+    val imageBitmap = remember(image) { image.asImageBitmap() }
+
+    Image(
+        bitmap = imageBitmap,
         contentDescription = null,
         modifier = modifier
             .aspectRatio(1f, matchHeightConstraintsFirst = true)
@@ -157,5 +156,5 @@ fun RoundImage(
                 shape = CircleShape
             )
             .clip(CircleShape)
-        )
+    )
 }

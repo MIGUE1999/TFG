@@ -1,5 +1,6 @@
 package com.padeltournaments.presentation.viewmodels
 
+import android.graphics.Bitmap
 import android.util.Log
 import android.util.Patterns
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +36,7 @@ class SignUpViewModel @Inject constructor(
     val clubName = mutableStateOf("")
     val bankAccount = mutableStateOf("")
     val rol = mutableStateOf(Rol.player)
+    val photo = mutableStateOf<Bitmap?>(null)
 
     val showForm = mutableStateOf(false)
 
@@ -48,6 +50,7 @@ class SignUpViewModel @Inject constructor(
     val validateCif = mutableStateOf(true)
     val validateClubName = mutableStateOf(true)
     val validateBankAccount = mutableStateOf(true)
+    val validatePhoto = mutableStateOf(true)
 
     val validateNameError = "Introduzca un nombre valido"
     val validateSurnameError = "Introduzca un apellido valido"
@@ -59,6 +62,7 @@ class SignUpViewModel @Inject constructor(
     val validateCifError = "Introduzca un cif valido"
     val validateClubNameError = "Introduzca un nombre de club valido"
     val validateBankAccountError = "Introduzca una cuenta bancaria valida"
+    val validatePhotorError = "Introduzca foto de perfil"
 
     var isPasswordVisible = mutableStateOf(false)
     var isConfirmPasswordVisible = mutableStateOf(false)
@@ -149,12 +153,13 @@ class SignUpViewModel @Inject constructor(
         validatePhone.value = Patterns.PHONE.matcher(tlfUser.value).matches()
         validatePassword.value = passwordUser.value.isNotBlank()
         validatePasswordsEqual.value = passwordUser.value == confirmPasswordUser.value
+        validatePhoto.value = photo.value != null
 
         if(rol.value == Rol.player){
             validateNickname.value = nickname.value.isNotBlank()
             return validateName.value && validateSurname.value &&
                     validateEmail.value && validatePhone.value
-                    && validatePassword.value && validatePasswordsEqual.value && validateNickname.value
+                    && validatePassword.value && validatePasswordsEqual.value && validatePhoto.value && validateNickname.value
         }
         else {
             validateCif.value = cif.value.isNotBlank()
@@ -163,12 +168,12 @@ class SignUpViewModel @Inject constructor(
             return validateName.value && validateSurname.value
                     && validateEmail.value && validatePhone.value
                     && validatePassword.value && validatePasswordsEqual.value
-                    && validateCif.value && validateBankAccount.value && validateClubName.value
+                    && validateCif.value && validateBankAccount.value && validatePhoto.value && validateClubName.value
         }
     }
     fun updateOrganizer(idUser: String){
         val user = UserEntity(id= idUser.toInt(), name = nameUser.value, password = passwordUser.value,
-        email = emailUser.value, telephoneNumber = tlfUser.value, surname = surnameUser.value, rol = Rol.organizer)
+        email = emailUser.value, telephoneNumber = tlfUser.value, surname = surnameUser.value, rol = Rol.organizer, photo = photo.value)
         viewModelScope.launch(Dispatchers.IO) {
             val organizer = getOrganizerByUserId(idUser)
             val newOrganizer = OrganizerEntity(id = organizer.id, cif = cif.value,
@@ -179,7 +184,7 @@ class SignUpViewModel @Inject constructor(
     }
     fun updatePlayer(idUser: String){
         val user = UserEntity(id= idUser.toInt(), name = nameUser.value, password = passwordUser.value,
-            email = emailUser.value, telephoneNumber = tlfUser.value, surname = surnameUser.value, rol = Rol.player)
+            email = emailUser.value, telephoneNumber = tlfUser.value, surname = surnameUser.value, rol = Rol.player, photo = photo.value)
         viewModelScope.launch(Dispatchers.IO) {
             val player = getPlayerByUserId(idUser)
             player?.let {
@@ -197,6 +202,7 @@ class SignUpViewModel @Inject constructor(
             passwordUser.value = userData.password
             confirmPasswordUser.value = userData.password
             tlfUser.value = userData.telephoneNumber
+            photo.value = userData.photo
             if (isOrganizer) {
                 val organizer = getOrganizerByUserId(idUser)
                 rol.value = Rol.organizer
@@ -220,6 +226,10 @@ class SignUpViewModel @Inject constructor(
     }
     private fun getPlayerByUserId(idUser: String): PlayerEntity?{
         return playerRepository.getPlayerByUserId(idUser.toInt())
+    }
+
+    fun onPhotoChanged(img: Bitmap){
+        this.photo.value = img
     }
 
 }
