@@ -1,6 +1,5 @@
 package com.padeltournaments.presentation.viewmodels
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
@@ -17,18 +16,38 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeOrganizerViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
-    private val tournamentPlayerRelationRepository: ITournamentPlayerRelationRepository,
-    private val playerRepository: IPlayerRepository,
-    private val organizerRepository: IOrganizerRepository
+    private val tournamentPlayerRelationRepository: ITournamentPlayerRelationRepository
 ) : ViewModel() {
 
-    private val _tournamentsFlow: MutableStateFlow<List<TournamentEntity>> = MutableStateFlow(emptyList())
-    val tournamentsFlow: StateFlow<List<TournamentEntity>> = _tournamentsFlow
-    fun deleteTournament(tournament : TournamentEntity){
+    private val _userId = MutableStateFlow(-1)
+    val userId: StateFlow<Int> = _userId
+
+    val tournamentsByUserId: Flow<List<TournamentEntity>> = userId.flatMapLatest { id ->
+        if (id != 0) {
+            tournamentRepository.getTournamentsByUserId(id)
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
+    val tournamentsPlayerByUserId: Flow<List<TournamentEntity>> = userId.flatMapLatest { id ->
+        if (id != 0) {
+            tournamentPlayerRelationRepository.getTournamentsByUserId(id)
+        } else {
+            flowOf(emptyList())
+        }
+    }
+
+    fun setUserId(id: Int) {
+        _userId.value = id
+    }
+
+    fun deleteTournament(tournament : TournamentEntity, userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             tournamentRepository.deleteTournament(tournament)
         }
     }
+    /*
     fun getOrganizerTournamentsByUserId(userId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val organizer = organizerRepository.getOrganizerByUserId(userId)
@@ -45,5 +64,5 @@ class HomeOrganizerViewModel @Inject constructor(
             }
         }
     }
-
+*/
 }

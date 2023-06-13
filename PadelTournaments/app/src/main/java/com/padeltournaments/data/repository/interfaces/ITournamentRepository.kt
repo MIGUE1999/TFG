@@ -14,5 +14,5 @@ interface ITournamentRepository {
     suspend fun updateTournament(tournamentEntity: TournamentEntity)
     suspend fun deleteTournament(tournamentEntity: TournamentEntity)
     suspend fun deleteTournaments(tournamentEntities: List<TournamentEntity>)
-    fun getTournamentsByOrgId(idOrg : Int) : List<TournamentEntity>
+    fun getTournamentsByUserId(userId: Int): Flow<List<TournamentEntity>>
 }

@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
 import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
 @Composable
@@ -67,7 +66,7 @@ fun TournamentCard(isOrganizer : Boolean,
                             Icon(Icons.Filled.Edit, "EditTournament")
                         }
                         IconButton(onClick = {
-                            homeOrganizerViewModel.deleteTournament(tournament)
+                            homeOrganizerViewModel.deleteTournament(tournament, userId = tournament.idOrganizer )
                         }) {
                             Icon(Icons.Filled.Delete, "DeleteTournament")
                         }

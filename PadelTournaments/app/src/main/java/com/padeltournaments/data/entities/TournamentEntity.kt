@@ -16,5 +16,4 @@ data class TournamentEntity(
     val poster: Bitmap? = null,
 
     val idOrganizer : Int,
-    //idReserva
 )

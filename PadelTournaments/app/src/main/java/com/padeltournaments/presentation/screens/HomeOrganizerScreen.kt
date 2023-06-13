@@ -28,9 +28,9 @@ fun HomeOrganizerScreen(session : LoginPref,
 {
     val userId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
 
-    homeOrganizerViewModel.getOrganizerTournamentsByUserId(userId)
+    homeOrganizerViewModel.setUserId(userId)
 
-    val tournaments by homeOrganizerViewModel.tournamentsFlow.collectAsState(initial = emptyList())
+    val tournaments by homeOrganizerViewModel.tournamentsByUserId.collectAsState(emptyList())
 
     Scaffold(topBar = { TopBar()},
              bottomBar = { BottomBar(navController = navController, organizerScreens) },

@@ -11,6 +11,7 @@ import com.padeltournaments.data.repository.interfaces.ITournamentRepository
 import com.padeltournaments.util.Category
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import javax.inject.Inject

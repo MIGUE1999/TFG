@@ -1,5 +1,8 @@
 package com.padeltournaments.presentation
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,9 +17,7 @@ import com.razorpay.AutoReadOtpHelper
 import com.razorpay.PaymentResultListener
 import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
-class MainActivity: ComponentActivity(), PaymentResultListener {
-
-    private var autoReadOtpHelper: AutoReadOtpHelper? = null
+class MainActivity: ComponentActivity(), PaymentResultListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,23 +31,16 @@ class MainActivity: ComponentActivity(), PaymentResultListener {
         // Lógica para el pago exitoso
         PaymentSucceed.inscriptionSucceed = true
         Toast.makeText(this, "Pago realizado con exito", Toast.LENGTH_SHORT).show()
-    }
 
+    }
     override fun onPaymentError(code: Int, message: String?) {
         // Lógica para el error de pago
         PaymentSucceed.inscriptionSucceed = false
         Toast.makeText(this, "Pago abortado", Toast.LENGTH_SHORT).show()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // Unregister the BroadcastReceiver to avoid memory leaks
-        if (autoReadOtpHelper != null) {
-            unregisterReceiver(autoReadOtpHelper)
-            autoReadOtpHelper = null
-        }
-    }
 }
+
+
 
 
 

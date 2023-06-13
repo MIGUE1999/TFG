@@ -31,6 +31,8 @@ import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
 import androidx.compose.material.*
 import androidx.compose.ui.draw.clip
 import com.padeltournaments.presentation.viewmodels.SignUpViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun PickImageFromGallery(createTournamentViewModel: CreateTournamentViewModel) {
@@ -96,7 +98,7 @@ fun PickImageFromGallery(createTournamentViewModel: CreateTournamentViewModel) {
 fun PickImageFromGalleryRoundedImage(signUpViewModel: SignUpViewModel = hiltViewModel()) {
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
-    val bitmap = remember{ mutableStateOf<Bitmap?>(null)}
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -108,21 +110,22 @@ fun PickImageFromGalleryRoundedImage(signUpViewModel: SignUpViewModel = hiltView
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        imageUri?.let {
-            if (Build.VERSION.SDK_INT < 28) {
-                bitmap.value = MediaStore.Images
-                    .Media.getBitmap(context.contentResolver, it)
-                signUpViewModel.onPhotoChanged(bitmap.value!!)
-
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                bitmap.value = ImageDecoder.decodeBitmap(source)
-                signUpViewModel.onPhotoChanged(bitmap.value!!)
+        if (imageUri != null) {
+            LaunchedEffect(imageUri) {
+                val newBitmap = withContext(Dispatchers.IO) {
+                    if (Build.VERSION.SDK_INT < 28) {
+                        MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+                    } else {
+                        val source = ImageDecoder.createSource(context.contentResolver, imageUri!!)
+                        ImageDecoder.decodeBitmap(source)
+                    }
+                }
+                bitmap.value = newBitmap
+                signUpViewModel.onPhotoChanged(newBitmap)
             }
         }
 
-        if( signUpViewModel.photo.value != null ) {
+        if (signUpViewModel.photo.value != null) {
             signUpViewModel.photo.value?.let {
                 Box(
                     modifier = Modifier
@@ -137,18 +140,7 @@ fun PickImageFromGalleryRoundedImage(signUpViewModel: SignUpViewModel = hiltView
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-            }/*
-            RoundButton(
-                onClick = { launcher.launch("image/*") },
-                modifier = Modifier.padding(10.dp),
-                contentDescription = "Botón redondo",
-                iconResId = R.drawable.camera,
-                backgroundColor = Color.LightGray,
-                contentColor = Color.Black,
-                isHidden = true
-            )
-            */
-            */
+            }
         } else {
             RoundButton(
                 onClick = { launcher.launch("image/*") },
@@ -173,8 +165,6 @@ fun PickImageFromGalleryRoundedImage(signUpViewModel: SignUpViewModel = hiltView
                 .fillMaxWidth(0.9f)
         )
     }
-
-
 }
 
 @Composable

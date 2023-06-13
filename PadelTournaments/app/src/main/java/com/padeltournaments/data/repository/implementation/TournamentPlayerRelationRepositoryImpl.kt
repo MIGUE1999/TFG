@@ -3,6 +3,7 @@ package com.padeltournaments.data.repository.implementation
 import com.padeltournaments.data.dao.TournamentPlayerRelationDao
 import com.padeltournaments.data.entities.PlayerEntity
 import com.padeltournaments.data.entities.TournamentEntity
+import com.padeltournaments.data.entities.UserEntity
 import com.padeltournaments.data.entities.relations.TournamentPlayerRelation
 import com.padeltournaments.data.repository.interfaces.ITournamentPlayerRelationRepository
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,17 @@ class TournamentPlayerRelationRepositoryImpl @Inject constructor(private val tou
         return tournamentPlayerRelationDao.getTournamentsForPlayer(playerId)
     }
 
-    override fun getPlayersForTournament(tournamentId: Int): List<PlayerEntity> {
-        return tournamentPlayerRelationDao.getPlayersForTournament(tournamentId)
+    override fun getPlayersForTournament(tournamentId: Int): Flow<List<UserEntity>> {
+        return tournamentPlayerRelationDao.getUsersForTournament(tournamentId)
     }
+
+    override fun getTournamentsByUserId(userId: Int): Flow<List<TournamentEntity>> {
+        return tournamentPlayerRelationDao.getTournamentsByUserId(userId)
+    }
+
+    override fun isUserInTournament(idUser: Int, idTournament: Int): Flow<Boolean> {
+        return tournamentPlayerRelationDao.isUserInTournament(idUser, idTournament)
+    }
+
+
 }

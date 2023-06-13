@@ -10,8 +10,7 @@ import com.padeltournaments.data.repository.interfaces.ITournamentPlayerRelation
 import com.padeltournaments.data.repository.interfaces.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,14 +24,12 @@ class DetailProductViewModel @Inject constructor(
     private val _tournamentsFlow: MutableStateFlow<List<TournamentEntity>> = MutableStateFlow(emptyList())
     val tournamentsFlow: StateFlow<List<TournamentEntity>> = _tournamentsFlow
 
-    private val _playersFlow: MutableStateFlow<List<UserEntity>> = MutableStateFlow(emptyList())
-    val playersFlow: StateFlow<List<UserEntity>> = _playersFlow
-
     fun insertPlayerTournamentRelationByUserId(idUser: String, tournamentViewModel: CreateTournamentViewModel, idTournament: String){
         viewModelScope.launch(Dispatchers.IO) {
             val idPlayer = getPlayerByUserId(idUser)?.id
             if (idPlayer != null) {
                 tournamentViewModel.insertPlayerTournamentRelation(idTournament.toInt(), idPlayer)
+
             }
         }
     }
@@ -49,20 +46,32 @@ class DetailProductViewModel @Inject constructor(
         }
     }
 
-    fun getTournamentPlayersByTournamentId(tournamentId: Int){
-        viewModelScope.launch(Dispatchers.IO) {
-            val players = tournamentPlayerRelationRepository.getPlayersForTournament(tournamentId)
-            val users: ArrayList<UserEntity> = ArrayList()
-            players.forEach{
-                val usuario = userRepository.getUserNoLiveById(it.userId)
-                if (usuario != null) {
-                    users.add(usuario)
-                }
-            }
-            val usersFinal = users.toList()
+    private val _tournamentId = MutableStateFlow(-1)
+    val tournamentId: StateFlow<Int> = _tournamentId
 
-            _playersFlow.value = usersFinal
+    val usersInscriptedTournament: Flow<List<UserEntity>> = tournamentId.flatMapLatest { id ->
+        if (id != 0) {
+            tournamentPlayerRelationRepository.getPlayersForTournament(id)
+        } else {
+            flowOf(emptyList())
         }
     }
+
+    fun setTournamentId(id: Int) {
+        _tournamentId.value = id
+    }
+
+    // Utilizamos MutableStateFlow para almacenar el valor actualizado
+    private val _isUserInTournament = MutableStateFlow(false)
+    val isUserInTournament: StateFlow<Boolean> = _isUserInTournament.asStateFlow()
+
+    fun checkPlayerInTournament(idUser: Int, idTournament: Int) {
+        viewModelScope.launch {
+            tournamentPlayerRelationRepository.isUserInTournament(idUser, idTournament).collect {
+                _isUserInTournament.value = it
+            }
+        }
+    }
+
 
 }

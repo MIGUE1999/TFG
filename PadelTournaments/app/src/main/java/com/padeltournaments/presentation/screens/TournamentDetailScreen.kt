@@ -103,31 +103,30 @@ fun TournamentDetailScreenContent(context : Context,
 
     val userId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
 
-    detailProductViewModel.getPlayerTournamentsByUserId(userId)
-    idTournament?.let { detailProductViewModel.getTournamentPlayersByTournamentId(it.toInt()) }
+    idTournament?.let { detailProductViewModel.setTournamentId(it.toInt()) }
+    val playersBooked by detailProductViewModel.usersInscriptedTournament.collectAsState(initial = emptyList())
+    idTournament?.let { detailProductViewModel.checkPlayerInTournament(idTournament = it.toInt(), idUser = userId ) }
 
-    val tournaments by detailProductViewModel.tournamentsFlow.collectAsState(initial = emptyList())
+    val isPlayerInTournament by detailProductViewModel.isUserInTournament.collectAsState()
 
-    val playersBooked by detailProductViewModel.playersFlow.collectAsState(initial = emptyList())
 
     LaunchedEffect(PaymentSucceed.inscriptionSucceed) {
         if(PaymentSucceed.inscriptionSucceed) {
-            if (idTournament != null) {
-                val keyId = session.getUserDetails()[LoginPref.KEY_ID]
-                keyId?.let { detailProductViewModel.insertPlayerTournamentRelationByUserId(it, tournamentViewModel, idTournament) }
+            if (idTournament != null && !isPlayerInTournament) {
+                 detailProductViewModel.insertPlayerTournamentRelationByUserId(userId.toString(), tournamentViewModel, idTournament)
+                PaymentSucceed.inscriptionSucceed = false
             }
         }
-    }
-    if(idTournament != null) {
-        tournaments.forEach { tournament ->
-            if (tournament.id == idTournament.toInt()) {
-                tournamentViewModel.enableInscription.value = false
-            }
-        }
+        idTournament?.let { detailProductViewModel.checkPlayerInTournament(idTournament = it.toInt(), idUser = userId ) }
     }
 
-    TournamentDetailSection(tournamentInfo = tournamentViewModel, session = session, playersBooked = playersBooked, navController = navController)
-
+    TournamentDetailSection(tournamentInfo = tournamentViewModel,
+        detailProductViewModel = detailProductViewModel,
+        session = session,
+        playersBooked = playersBooked,
+        navController = navController,
+        isPlayerInTournament = isPlayerInTournament
+    )
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -197,11 +196,14 @@ fun TournamentDetailSection(
 @Composable
 fun TournamentDetailSection(
     tournamentInfo: CreateTournamentViewModel,
+    detailProductViewModel: DetailProductViewModel,
     modifier: Modifier = Modifier,
     session: LoginPref,
     playersBooked: List<UserEntity>,
-    navController: NavController
+    navController: NavController,
+    isPlayerInTournament: Boolean
 ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -249,7 +251,7 @@ fun TournamentDetailSection(
                 Spacer(modifier = Modifier.height(24.dp))
                 PayButton(
                     tournamentInfo.inscriptionCost.value,
-                    enableInscription = tournamentInfo.enableInscription.value
+                    isPlayerInTournament = isPlayerInTournament
                 )
             }
 
@@ -371,19 +373,19 @@ private fun TournamentDetailHeader(
 }
 @Composable
 fun PayButton( inscriptionCost: String,
-               enableInscription: Boolean) {
+               isPlayerInTournament: Boolean) {
     val euroSymbol = '\u20AC'
     val context = LocalContext.current
     val activity = context as Activity
     var text = "INSCRIBIRME - $inscriptionCost $euroSymbol"
-    if (!enableInscription) {
+    if (isPlayerInTournament) {
         text = "INSCRITO"
     }
     Button(onClick = {
                      val razorPayments = RazorPayments(activity)
                     razorPayments.startPayment(inscriptionCost.toInt())
     },
-        enabled = enableInscription,
+        enabled = !isPlayerInTournament,
         modifier = Modifier
             .fillMaxWidth()
             .padding(5.dp),

@@ -34,33 +34,34 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
     ) {
         var isPressed by remember { mutableStateOf(false) }
 
-        Column(modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .border(width = 1.5.dp, color = Color.Black)) {
-
-            Row(modifier = Modifier
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
                 .fillMaxWidth()
-                .border(width = 1.5.dp, color = Color.Black)) {
+        ) {
 
-                Spacer(modifier = Modifier.size(10.dp))
-                signUpViewModel.photo.value?.let {
-                    RoundImage(
-                        image = it,
-                        modifier = Modifier
-                            .fillMaxHeight(0.7f)
-                            .weight(1f)
-                            .background(color = Color.Yellow)
-                    )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(0.3f)
+                        .padding(10.dp)
+                ) {
+                    signUpViewModel.photo.value?.let {
+                        RoundImage(
+                            image = it,
+                            modifier = Modifier
+                                .fillMaxHeight(0.7f)
+                            //.weight(1f)
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.size(10.dp))
-
                 Box(
-                    Modifier
-                        .fillMaxHeight(0.7f)
-                        .weight(1f)
-                        .background(color = Color.Blue)
+                    modifier = Modifier
+                        .weight(0.6f)
                 ) {
                     if (signUpViewModel.rol.value == Rol.organizer) {
                         Text(
@@ -69,8 +70,7 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                                 .padding(top = 25.dp, end = 20.dp),
                             fontSize = 25.sp
                         )
-                    }
-                    else {
+                    } else {
                         Text(
                             text = signUpViewModel.nickname.value,
                             modifier = Modifier
@@ -80,14 +80,9 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                     }
                 }
 
-                Spacer(modifier = Modifier.size(10.dp))
-
                 Box(
-                    Modifier
-                        .fillMaxHeight(0.7f)
-                        .weight(1f)
-                        .background(color = Color.Red),
-                    contentAlignment = Alignment.TopEnd,
+                    modifier = Modifier
+                        .weight(0.1f)
                 ) {
                     IconButton(
                         onClick = {
@@ -101,60 +96,61 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
             }
 
             Row(modifier = Modifier.fillMaxWidth()) {
+
                 Box(
-                    contentAlignment = Alignment.Center,
                     modifier = Modifier
+                        .weight(0.9f)
+                        .padding(10.dp)
                         .fillMaxHeight()
-                        .fillMaxWidth(0.8f)
                 ) {
                     Text(
                         text = "Mi Informacion",
-                        textAlign = TextAlign.Center, // make text center horizontal
+                        textAlign = TextAlign.Center, // hacer que el texto esté centrado horizontalmente
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
 
-                val border = if (isPressed){
-                    1.5.dp
-                } else {
-                    0.dp
-                }
                 Box(
-                    contentAlignment = Alignment.Center,
                     modifier = Modifier
+                        .weight(0.1f)
                         .fillMaxHeight()
-                        .fillMaxWidth()
-                        .border(width = border, color = Color.Black)
                 ) {
                     IconButton(
                         onClick = {
                             isPressed = !isPressed
-                            //funcion que permita escribir en los textfields de ProfileOrganizerData
                             signUpViewModel.showForm.value = !signUpViewModel.showForm.value
-                        }) {
-                        Icon(Icons.Filled.Edit, null)
+                        }
+                    ) {
+                        Icon(
+                            Icons.Filled.Edit,
+                            contentDescription = null,
+                            modifier = if (isPressed) Modifier.background(Color.Gray) else Modifier
+                        )
                     }
                 }
             }
         }
     }
 }
-@Composable
-fun RoundImage(
-    image: Bitmap,
-    modifier: Modifier = Modifier
-) {
-    val imageBitmap = remember(image) { image.asImageBitmap() }
 
-    Image(
-        bitmap = imageBitmap,
-        contentDescription = null,
-        modifier = modifier
-            .aspectRatio(1f, matchHeightConstraintsFirst = true)
-            .border(
-                width = 1.dp,
-                color = Color.LightGray,
-                shape = CircleShape
-            )
-            .clip(CircleShape)
-    )
-}
+
+    @Composable
+    fun RoundImage(
+        image: Bitmap,
+        modifier: Modifier = Modifier
+    ) {
+        val imageBitmap = remember(image) { image.asImageBitmap() }
+
+        Image(
+            bitmap = imageBitmap,
+            contentDescription = null,
+            modifier = modifier
+                .aspectRatio(1f, matchHeightConstraintsFirst = true)
+                .border(
+                    width = 1.dp,
+                    color = Color.LightGray,
+                    shape = CircleShape
+                )
+                .clip(CircleShape)
+        )
+    }

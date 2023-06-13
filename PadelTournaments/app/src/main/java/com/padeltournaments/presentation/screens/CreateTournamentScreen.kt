@@ -27,11 +27,15 @@ import com.padeltournaments.presentation.composables.showDatePicker
 import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.util.*
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
+import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
+import kotlinx.coroutines.delay
+
 @Composable
 fun CreateTournamentScreen(context : Context,
                            navController: NavController,
                            session : LoginPref,
-                           createTournamentViewModel: CreateTournamentViewModel = hiltViewModel()
+                           createTournamentViewModel: CreateTournamentViewModel = hiltViewModel(),
+                           homeOrganizerViewModel: HomeOrganizerViewModel = hiltViewModel()
 ){
     val focusManager: FocusManager = LocalFocusManager.current
 

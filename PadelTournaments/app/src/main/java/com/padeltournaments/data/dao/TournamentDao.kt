@@ -25,6 +25,6 @@ interface TournamentDao  {
     suspend fun deleteTournament(tournamentEntity: TournamentEntity)
     @Delete
     suspend fun deleteTournaments(tournamentEntities: List<TournamentEntity>)
-    @Query("SELECT * FROM tournament WHERE idOrganizer = :idOrg")
-    fun getTournamentsByOrgId(idOrg: Int) : List<TournamentEntity>
+    @Query("SELECT * FROM tournament WHERE idOrganizer IN (SELECT id FROM organizer WHERE userId = :userId)")
+    fun getTournamentsByUserId(userId: Int): Flow<List<TournamentEntity>>
 }
