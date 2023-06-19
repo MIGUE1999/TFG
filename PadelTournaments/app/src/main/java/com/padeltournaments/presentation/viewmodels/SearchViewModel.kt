@@ -18,10 +18,13 @@ class SearchViewModel @Inject constructor(
     private val filteredCategoriesListValue = ArrayList<TournamentEntity>()
     private var filteredPrizeListValue = ArrayList<TournamentEntity>()
     private var filteredCostListValue = ArrayList<TournamentEntity>()
+    private var filteredUbicationListValue = ArrayList<TournamentEntity>()
+
 
     var categoryVal: String? = null
     var prize: String? = null
     var cost: String? = null
+    var ubication: String? = null
 
     private val _filteredList = MutableLiveData<List<TournamentEntity>>()
     val filteredList: LiveData<List<TournamentEntity>> get() = _filteredList
@@ -61,7 +64,7 @@ class SearchViewModel @Inject constructor(
     }
 
 
-    fun filterCombineFilters(allTournaments : List<TournamentEntity>, category: String?, prize: String?, cost: String?) {
+    fun filterCombineFilters(allTournaments : List<TournamentEntity>, category: String?, prize: String?, cost: String?, ubication: String?) {
         _filteredList.value = emptyList()
         if (category != null){
             filterTournamentByCategory(allTournaments, category)
@@ -69,17 +72,36 @@ class SearchViewModel @Inject constructor(
                 filterTournamentByPrize(_filteredList.value!!, prize)
                 if (cost != null){
                     filterTournamentByCost(_filteredList.value!!, cost)
+                    if(ubication != null){
+                        filterTournamentByUbication(_filteredList.value!!, ubication)
+                    }
                 }
             } else if (cost != null){
                 filterTournamentByCost(_filteredList.value!!, cost)
+                if(ubication != null){
+                    filterTournamentByUbication(_filteredList.value!!, ubication)
+                }
+            } else if(ubication != null){
+                filterTournamentByUbication(_filteredList.value!!, ubication)
             }
         } else if(prize != null) {
             filterTournamentByPrize(allTournaments, prize)
             if (cost != null){
                 filterTournamentByCost(_filteredList.value!!, cost)
+                if(ubication != null){
+                    filterTournamentByUbication(_filteredList.value!!, ubication)
+                }
+            }
+            else if(ubication != null){
+                filterTournamentByUbication(_filteredList.value!!, ubication)
             }
         } else if(cost != null){
             filterTournamentByCost(allTournaments, cost)
+            if(ubication != null){
+                filterTournamentByUbication(_filteredList.value!!, ubication)
+            }
+        } else if(ubication != null){
+            filterTournamentByUbication(allTournaments, ubication)
         }
         else { _filteredList.value = allTournaments}
     }
@@ -115,12 +137,13 @@ class SearchViewModel @Inject constructor(
         _filteredList.value = filteredCostListValue
         //setIsFiltering(true)
     }
-    fun filterTournamentByLocation(allTournaments : List<TournamentEntity>, location: String) {
-        filteredCategoriesListValue.clear()
+    fun filterTournamentByUbication(allTournaments : List<TournamentEntity>, location: String) {
+        filteredUbicationListValue.clear()
         allTournaments.forEach { tournament ->
-            if (tournament.category == location) {
-                filteredCategoriesListValue.add(tournament)
+            if (tournament.province == location) {
+                filteredUbicationListValue.add(tournament)
             }
+            _filteredList.value = filteredUbicationListValue.toList()
         }
     }
     fun setIsFiltering(isFiltering: Boolean){

@@ -9,14 +9,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.padeltournaments.data.entities.TournamentEntity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.padeltournaments.R
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
 import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
 @Composable
@@ -26,11 +30,14 @@ fun TournamentCard(isOrganizer : Boolean,
                    homeOrganizerViewModel: HomeOrganizerViewModel = hiltViewModel(),
                    createTournamentViewModel: CreateTournamentViewModel = hiltViewModel()
 ){
+
+    val euroSymbol = '\u20AC'
     Card(shape = RoundedCornerShape(8.dp),
         elevation = 1.dp,
         modifier = Modifier
             .padding(horizontal = 8.dp, vertical = 4.dp)
-            .fillMaxWidth())
+            .fillMaxWidth()
+    )
     {
         Column() {
             Box(modifier = Modifier.fillMaxWidth()) {
@@ -44,20 +51,88 @@ fun TournamentCard(isOrganizer : Boolean,
                     )
                 }
             }
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.fillMaxWidth(fraction = 0.8f)) {
+            Card(modifier = Modifier.fillMaxWidth(),
+            elevation = 18.dp) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    ) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                        ) {
                         ClickableText(text = AnnotatedString(tournament.name),
                             style = MaterialTheme.typography.h5,
                             onClick = {
                                 val idTournament = tournament.id.toString()
                                 navController.navigate("tournament_detail/$idTournament")
                             })
-                        Text("Fecha de inicio: " + tournament.startDate)
-                        Text("Fecha de finalizacion:" + tournament.endDate)
-                        Text("Categoria: " + tournament.category)
-                        Text("Premio: " + tournament.prize)
+                        Spacer(4)
+                        Row(modifier = Modifier.fillMaxWidth()){
+                            Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                Icon(painter = painterResource(id = R.drawable.calendario),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                                Spacer(3)
+                                Text(tournament.startDate)
+                            }
+
+                            Spacer(3)
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Icon(painter = painterResource(id = R.drawable.calendario),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                                Spacer(3)
+                                Text(tournament.endDate)
+                            }
+
+                        }
+
+                        Spacer(3)
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.category),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                                Spacer(3)
+                                Text(tournament.category)
+                            }
+
+                            Spacer(3)
+                            Row(modifier = Modifier.fillMaxWidth()) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.prize),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                                Spacer(3)
+                                Text(tournament.prize.toString() + euroSymbol)
+                            }
+                        }
+
+                        Spacer(3)
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ubicacion),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onSurface,
+                                    modifier = Modifier.size(25.dp)
+                                )
+                                Spacer(3)
+                                Text(tournament.province)
+                            }
+                        }
+                        Spacer(3)
+
                     }
+
                     if (isOrganizer) {
                         IconButton(onClick = {
                             val idTournament = tournament.id.toString()

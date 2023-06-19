@@ -20,7 +20,7 @@ import com.padeltournaments.data.entities.UserEntity
 fun ProfilesBookedLazyRow(
     profiles: List<UserEntity>
 ) {
-    LazyRow(modifier = Modifier.fillMaxWidth().background(color = Color.Red).height(150.dp)) {
+    LazyRow(modifier = Modifier.fillMaxWidth().height(150.dp)) {
         items(items = profiles) { profile ->
             Column(
                 modifier = Modifier.padding(start = 12.dp, end = 12.dp),
@@ -32,7 +32,6 @@ fun ProfilesBookedLazyRow(
                         modifier = Modifier
                             .fillMaxHeight(0.7f)
                             .weight(1f)
-                            .background(color = Color.Yellow)
                     )
                 }
                 Text(

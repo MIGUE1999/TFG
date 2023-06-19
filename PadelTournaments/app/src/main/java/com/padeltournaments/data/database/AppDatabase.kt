@@ -13,7 +13,7 @@ import com.padeltournaments.util.Converters
     TournamentPlayerRelation::class
     //OrganizatorWithTournaments::class
 ],
-    version = 9,
+    version = 10,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

@@ -14,6 +14,9 @@ data class TournamentEntity(
     val endDate: String,
     val prize: Int,
     val poster: Bitmap? = null,
+    val maxNumberInscriptions: Int,
+    val ubication: String,
+    val province: String,
 
     val idOrganizer : Int,
 )

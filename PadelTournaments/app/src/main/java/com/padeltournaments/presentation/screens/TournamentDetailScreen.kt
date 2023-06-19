@@ -82,7 +82,6 @@ fun TournamentDetailTopSection(
                 }
         )
         TournamentDetailHeader(createTournamentViewModel)
-
     }
 }
 
@@ -109,7 +108,6 @@ fun TournamentDetailScreenContent(context : Context,
 
     val isPlayerInTournament by detailProductViewModel.isUserInTournament.collectAsState()
 
-
     LaunchedEffect(PaymentSucceed.inscriptionSucceed) {
         if(PaymentSucceed.inscriptionSucceed) {
             if (idTournament != null && !isPlayerInTournament) {
@@ -128,71 +126,6 @@ fun TournamentDetailScreenContent(context : Context,
         isPlayerInTournament = isPlayerInTournament
     )
 }
-
-///////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-/*
-@Composable
-fun TournamentDetailSection(
-    tournamentInfo: CreateTournamentViewModel,
-    modifier: Modifier = Modifier,
-    session: LoginPref,
-    playersBooked: List<UserEntity>,
-    navController: NavController
-) {
-    val scrollState = rememberScrollState()
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .background(color = Color.Red)
-    ) {
-        Box(modifier = Modifier.fillMaxWidth()
-            .fillMaxHeight(0.7f)
-            .background(color = Color.Blue)) {
-
-            Text("HOla")
-            /*
-            TournamentDetailTopSection(
-                navController = navController,
-            )
-            TournamentDetailHeader(tournamentInfo)
-
-             */
-        }
-/*
-        Text(
-            text = tournamentInfo.nameTournament.value,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.onSurface
-        )
-        TournamentDateSection(tournamentInfo = tournamentInfo)
-
-        TournamentDetailDataSection(
-            category = tournamentInfo.category.value,
-            prize = tournamentInfo.prizeTournament.value
-        )
-
-        ProfilesBookedLazyRow(profiles = playersBooked)
-
-        if(session.getUserDetails()[LoginPref.KEY_ROL] == Rol.player) {
-            PayButton(
-                tournamentInfo.inscriptionCost.value,
-                enableInscription = tournamentInfo.enableInscription.value
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-*/
-    }
-}
-*/
-
 @Composable
 fun TournamentDetailSection(
     tournamentInfo: CreateTournamentViewModel,
@@ -245,7 +178,18 @@ fun TournamentDetailSection(
             )
             Spacer(modifier = Modifier.height(24.dp))
 
+            Column() {
+                Text(text = "Jugadores Inscritos: " + playersBooked.size + "/" + tournamentInfo.maxNumberInscriptions.value)
+                if(tournamentInfo.maxNumberInscriptions.value != "") {
+                    LinearProgressIndicator(
+                        progress = playersBooked.size.toFloat() / tournamentInfo.maxNumberInscriptions.value.toFloat(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+
             ProfilesBookedLazyRow(profiles = playersBooked)
+
 
             if(session.getUserDetails()[LoginPref.KEY_ROL] == Rol.player) {
                 Spacer(modifier = Modifier.height(24.dp))

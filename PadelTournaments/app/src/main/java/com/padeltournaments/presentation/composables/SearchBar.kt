@@ -69,10 +69,13 @@ fun FilterLazyRow(
     val categories = listOf(
         listOf("Primera", "Segunda", "Tercera"),
         listOf("De mas caro a mas barato", "De mas barato a mas caro"),
-        listOf("De mayor a menor", "De menor a mayor")
+        listOf("De mayor a menor", "De menor a mayor"),
+        listOf("Almería", "Cádiz", "Córdoba", "Granada",
+                "Huelva", "Jaén", "Málaga", "Sevilla"
+                )
     )
 
-    val defaultSelected = listOf("Categoria", "Precio", "Premio")
+    val defaultSelected = listOf("Categoria", "Precio", "Premio", "Ubicacion")
 
     val selectedCategories = remember {
         mutableStateListOf(*defaultSelected.toTypedArray())
@@ -93,13 +96,15 @@ fun FilterLazyRow(
                                 0 -> searchViewModel.categoryVal = selectedItem
                                 1 -> searchViewModel.cost = selectedItem
                                 2 -> searchViewModel.prize = selectedItem
+                                3 -> searchViewModel.ubication = selectedItem
                             }
                         }
                         searchViewModel.filterCombineFilters(
                             allTournaments,
                             searchViewModel.categoryVal,
                             searchViewModel.prize,
-                            searchViewModel.cost
+                            searchViewModel.cost,
+                            searchViewModel.ubication
                         )
                         searchViewModel.setIsFiltering(true)
                     },

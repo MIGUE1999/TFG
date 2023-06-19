@@ -28,18 +28,31 @@ class CreateTournamentViewModel @Inject constructor(
     val dateEnd = mutableStateOf("")
     val poster = mutableStateOf<Bitmap?>(null)
     val enableInscription = mutableStateOf(true)
+    val maxNumberInscriptions = mutableStateOf("")
+    val ubication = mutableStateOf("")
+    val province = mutableStateOf("")
+
+
 
     val validateName = mutableStateOf(true)
     val validateInscriptionCost = mutableStateOf(true)
     val validatePrize = mutableStateOf(true)
     val validateDate = mutableStateOf(true)
     val validatePoster = mutableStateOf(true)
+    val validateMaxNumberInscriptions = mutableStateOf(true)
+    val validateUbication = mutableStateOf(true)
+    val validateProvince = mutableStateOf(true)
 
     val validateNameError = "Introduzca un nombre valido"
     val validateInscriptionCostError = "Introduzca un precio de inscripcion valido"
     val validatePrizeError = "Introduzca un premio valido"
     val validateDateError = "Introduzca las fechas correctamente"
     val validatePosterError = "Introduzca el cartel del torneo"
+    val validateMaxNumberInscriptionsError = "Introduzca un numero maximo de jugadores correcto"
+    val validateUbicationError = "Introduzca una ubicacion correcta"
+    val validateProvinceError = "Introduzca una provincia"
+
+
     fun createTournament(idOrg: Int){
         val newTournament = TournamentEntity(name = nameTournament.value,
             inscriptionCost = inscriptionCost.value.toInt(),
@@ -48,6 +61,9 @@ class CreateTournamentViewModel @Inject constructor(
             startDate = dateIni.value,
             endDate = dateEnd.value,
             poster = poster.value,
+            maxNumberInscriptions = maxNumberInscriptions.value.toInt(),
+            ubication = ubication.value,
+            province = province.value,
             idOrganizer = idOrg
         )
         insertTournament(newTournament)
@@ -68,6 +84,9 @@ class CreateTournamentViewModel @Inject constructor(
                 startDate = dateIni.value,
                 endDate = dateEnd.value,
                 poster = poster.value,
+                maxNumberInscriptions = maxNumberInscriptions.value.toInt(),
+                ubication = ubication.value,
+                province = province.value,
                 idOrganizer = idOrg
             )
             tournamentRepository.updateTournament(updatedTournament)
@@ -77,6 +96,9 @@ class CreateTournamentViewModel @Inject constructor(
         validateName.value = nameTournament.value.isNotBlank()
         validateInscriptionCost.value = inscriptionCost.value.isNotBlank()
         validatePrize.value = prizeTournament.value.isNotBlank()
+        validateMaxNumberInscriptions.value = maxNumberInscriptions.value.isNotBlank()
+        validateUbication.value = ubication.value.isNotBlank()
+        validateProvince.value = province.value.isNotBlank()
 
         if (dateIni.value != "" && dateEnd.value != "") {
             val format = SimpleDateFormat("dd/MM/yyyy")
@@ -93,7 +115,8 @@ class CreateTournamentViewModel @Inject constructor(
 
 
         return validateName.value && validateInscriptionCost.value && validatePrize.value &&
-                validateDate.value && validatePoster.value
+                validateDate.value && validatePoster.value && validateMaxNumberInscriptions.value
+                && validateUbication.value && validateProvince.value
     }
     fun onNameChanged(name:String){
         nameTournament.value = name
@@ -116,14 +139,26 @@ class CreateTournamentViewModel @Inject constructor(
     fun onCartelChanged(img: Bitmap){
         this.poster.value = img
     }
+    fun onMaxNumberInscriptionsChanged(maxNumberInscription: String){
+        this.maxNumberInscriptions.value = maxNumberInscription
+    }
+    fun onUbicationChanged(ubi: String){
+        this.ubication.value = ubi
+    }
+    fun onProvinceChanged(province: String){
+        this.province.value = province
+    }
     private fun setTournament(tournament: TournamentEntity){
-         nameTournament.value = tournament.name
-         inscriptionCost.value = tournament.inscriptionCost.toString()
-         prizeTournament.value = tournament.prize.toString()
-         category.value = tournament.category
-         dateIni.value = tournament.startDate
-         dateEnd.value = tournament.endDate
-         poster.value = tournament.poster
+        nameTournament.value = tournament.name
+        inscriptionCost.value = tournament.inscriptionCost.toString()
+        prizeTournament.value = tournament.prize.toString()
+        category.value = tournament.category
+        dateIni.value = tournament.startDate
+        dateEnd.value = tournament.endDate
+        poster.value = tournament.poster
+        maxNumberInscriptions.value = tournament.maxNumberInscriptions.toString()
+        ubication.value = tournament.ubication
+        province.value = tournament.province
     }
 
     fun setTournamentById(idTournament: Int){
