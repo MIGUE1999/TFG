@@ -60,5 +60,8 @@ fun BottomNavGraph( navController : NavHostController = rememberNavController(),
         composable(route = NavigationScreens.TournamentDetail.route){ backStackEntry ->
             TournamentDetailScreen(context = context, navController = navController, idTournament = backStackEntry.arguments?.getString("idTournament"), session = session )
         }
+        composable(route = NavigationScreens.CreateCourt.route){
+            CreateCourtScreen(context = context, session = session, navController = navController )
+        }
     }
 }

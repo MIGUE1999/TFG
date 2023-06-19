@@ -1,5 +1,7 @@
 package com.padeltournaments.presentation.viewmodels
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
@@ -21,6 +23,8 @@ class HomeOrganizerViewModel @Inject constructor(
 
     private val _userId = MutableStateFlow(-1)
     val userId: StateFlow<Int> = _userId
+
+    var isTournamentList = mutableStateOf(true)
 
     val tournamentsByUserId: Flow<List<TournamentEntity>> = userId.flatMapLatest { id ->
         if (id != 0) {

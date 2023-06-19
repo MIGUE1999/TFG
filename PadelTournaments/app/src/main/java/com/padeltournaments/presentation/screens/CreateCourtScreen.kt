@@ -34,20 +34,20 @@ import com.padeltournaments.presentation.composables.PickImageFromGallery
 import com.padeltournaments.presentation.composables.showDatePicker
 import com.padeltournaments.presentation.navigation.NavigationScreens
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
-import com.padeltournaments.util.*
+import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
+import com.padeltournaments.util.Category
+import com.padeltournaments.util.LoginPref
+import com.padeltournaments.util.TOURNAMENT_END_DATE
+import com.padeltournaments.util.TOURNAMENT_STARTED_DATE
+
 @Composable
-fun EditTournamentScreen(context : Context,
+fun CreateCourtScreen(context : Context,
                            navController: NavController,
                            session : LoginPref,
                            createTournamentViewModel: CreateTournamentViewModel = hiltViewModel(),
-                           idTournament: String?
+                           homeOrganizerViewModel: HomeOrganizerViewModel = hiltViewModel()
 ){
     val focusManager: FocusManager = LocalFocusManager.current
-    LaunchedEffect(idTournament) {
-        if (idTournament != null) {
-            createTournamentViewModel.setTournamentById(idTournament.toInt())
-        }
-    }
 
     ProvideWindowInsets {
         Column() {
@@ -77,11 +77,12 @@ fun EditTournamentScreen(context : Context,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Text(text = "Editar Torneo", fontSize = 40.sp)
+
+                Text(text = "Crear Pista", fontSize = 40.sp)
 
                 CustomTextInput(
                     value = createTournamentViewModel.nameTournament.value,
-                    onValueChange = { createTournamentViewModel.onNameChanged(it) },
+                    onValueChange = {createTournamentViewModel.onNameChanged(it) },
                     label = "Nombre",
                     showError = !createTournamentViewModel.validateName.value,
                     errorMessage = createTournamentViewModel.validateNameError,
@@ -90,13 +91,13 @@ fun EditTournamentScreen(context : Context,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
                     )
                 )
 
                 CustomTextInput(
                     value = createTournamentViewModel.inscriptionCost.value,
-                    onValueChange = { createTournamentViewModel.onInscriptionCostChanged(it) },
+                    onValueChange = {createTournamentViewModel.onInscriptionCostChanged(it) },
                     label = "Precio de Inscripcion",
                     showError = !createTournamentViewModel.validateInscriptionCost.value,
                     errorMessage = createTournamentViewModel.validateInscriptionCostError,
@@ -105,13 +106,12 @@ fun EditTournamentScreen(context : Context,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
                     )
                 )
-
                 CustomTextInput(
                     value = createTournamentViewModel.prizeTournament.value,
-                    onValueChange = { createTournamentViewModel.onPrizeChanged(it) },
+                    onValueChange = {createTournamentViewModel.onPrizeChanged(it) },
                     label = "Premio",
                     showError = !createTournamentViewModel.validatePrize.value,
                     errorMessage = createTournamentViewModel.validatePrizeError,
@@ -120,13 +120,12 @@ fun EditTournamentScreen(context : Context,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
                     )
                 )
-
                 CustomTextInput(
                     value = createTournamentViewModel.maxNumberInscriptions.value,
-                    onValueChange = { createTournamentViewModel.onMaxNumberInscriptionsChanged(it) },
+                    onValueChange = {createTournamentViewModel.onMaxNumberInscriptionsChanged(it) },
                     label = "Maximo de participantes",
                     showError = !createTournamentViewModel.validateMaxNumberInscriptions.value,
                     errorMessage = createTournamentViewModel.validateMaxNumberInscriptionsError,
@@ -135,12 +134,12 @@ fun EditTournamentScreen(context : Context,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
                     )
                 )
                 CustomTextInput(
                     value = createTournamentViewModel.ubication.value,
-                    onValueChange = { createTournamentViewModel.onUbicationChanged(it) },
+                    onValueChange = {createTournamentViewModel.onUbicationChanged(it) },
                     label = "Ubicacion",
                     showError = !createTournamentViewModel.validateUbication.value,
                     errorMessage = createTournamentViewModel.validateUbicationError,
@@ -149,7 +148,7 @@ fun EditTournamentScreen(context : Context,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
                     )
                 )
 
@@ -223,13 +222,11 @@ fun EditTournamentScreen(context : Context,
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+
                 Text(text = "Seleccione Categoria")
-                val selectedCategory = remember {
-                    createTournamentViewModel.category.value
-                }
                 Row {
                     RadioButton(
-                        selected = selectedCategory == Category.first,
+                        selected = createTournamentViewModel.category.value == Category.first,
                         onClick =
                         {
                             createTournamentViewModel.onCategoryChanged(Category.first)
@@ -240,7 +237,7 @@ fun EditTournamentScreen(context : Context,
                     Spacer(modifier = Modifier.size(16.dp))
 
                     RadioButton(
-                        selected = selectedCategory == Category.second,
+                        selected = createTournamentViewModel.category.value == Category.second,
                         onClick =
                         {
                             createTournamentViewModel.onCategoryChanged(Category.second)
@@ -251,7 +248,7 @@ fun EditTournamentScreen(context : Context,
                     Spacer(modifier = Modifier.size(16.dp))
 
                     RadioButton(
-                        selected = selectedCategory == Category.third,
+                        selected = createTournamentViewModel.category.value == Category.third,
                         onClick =
                         {
                             createTournamentViewModel.onCategoryChanged(Category.third)
@@ -262,34 +259,32 @@ fun EditTournamentScreen(context : Context,
                     Spacer(modifier = Modifier.size(16.dp))
                 }
 
-                showDatePicker(
-                    context,
+                showDatePicker(context,
                     TOURNAMENT_STARTED_DATE,
                     TOURNAMENT_END_DATE,
-                    createTournamentViewModel = createTournamentViewModel
+                    createTournamentViewModel = createTournamentViewModel,
+                    showError = !createTournamentViewModel.validateDate.value,
+                    errorMessage = createTournamentViewModel.validateDateError,
                 )
 
                 PickImageFromGallery(createTournamentViewModel)
 
-                Button(
-                    onClick = {
+                Button(onClick = {
+                    if (createTournamentViewModel.validateData()) {
                         session.getUserDetails()[LoginPref.KEY_ORG_ID]?.let {
-                            var idOrg = session.getUserDetails()[LoginPref.KEY_ORG_ID]!!.toInt()
-                            if (idTournament != null) {
-                                createTournamentViewModel.updateTournament(
-                                    idTournament.toInt(),
-                                    idOrg
-                                )
-                            }
+                            val idOrg = it.toInt()
+                            createTournamentViewModel.createTournament(idOrg)
                             navController.navigate(NavigationScreens.HomeOrganizer.route)
                         }
-                    }, modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                ) {
-                    Text(text = "Editar Torneo")
+                    }
+                }, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp)) {
+                    Text(text = "Crear Torneo")
                 }
             }
+
         }
+
     }
 }

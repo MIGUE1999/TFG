@@ -8,10 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.padeltournaments.presentation.navigation.NavigationScreens
 @Composable
-fun FAB(navController: NavHostController){
+fun FAB(navController: NavHostController, isListTournaments: Boolean){
     FloatingActionButton(
-        onClick = { navController.navigate(NavigationScreens.CreateTournament.route) }
+        onClick = {
+            if(isListTournaments) {
+                navController.navigate(NavigationScreens.CreateTournament.route)
+            }
+            else {
+                navController.navigate(NavigationScreens.CreateCourt.route)
+            }
+        }
     ){
-        Icon(imageVector = Icons.Default.Add, "Crear Torneo")
+        Icon(imageVector = Icons.Default.Add, "Crear Torneo/Pista")
     }
 }
