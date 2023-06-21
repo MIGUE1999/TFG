@@ -64,4 +64,8 @@ sealed class NavigationScreens(
         route = "create_court",
         title = "CreateCourt",
     )
+    object CourtDetail : NavigationScreens(
+        route = "court_detail/{idCourt}",
+        title = "CourtDetail",
+    )
 }

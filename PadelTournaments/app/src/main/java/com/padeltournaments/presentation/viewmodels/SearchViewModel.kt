@@ -8,10 +8,13 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.padeltournaments.data.entities.CourtEntity
+import com.padeltournaments.data.repository.interfaces.ICourtRepository
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
+    private val courtRepository: ICourtRepository
 ) : ViewModel() {
 
     private val filteredListValue = ArrayList<TournamentEntity>()
@@ -20,20 +23,40 @@ class SearchViewModel @Inject constructor(
     private var filteredCostListValue = ArrayList<TournamentEntity>()
     private var filteredUbicationListValue = ArrayList<TournamentEntity>()
 
+    private var filteredCourtCostListValue = ArrayList<CourtEntity>()
+    private var filteredCourtUbicationListValue = ArrayList<CourtEntity>()
+
+
+
+
+
 
     var categoryVal: String? = null
     var prize: String? = null
     var cost: String? = null
     var ubication: String? = null
 
+    var courtUbication: String? = null
+    var courtCost: String? = null
+
     private val _filteredList = MutableLiveData<List<TournamentEntity>>()
     val filteredList: LiveData<List<TournamentEntity>> get() = _filteredList
+
+    private val _filteredCourtList = MutableLiveData<List<CourtEntity>>()
+    val filteredCourtList: LiveData<List<CourtEntity>> get() = _filteredCourtList
 
     private val _isFiltering = MutableLiveData(false)
     val isFiltering: LiveData<Boolean> get() = _isFiltering
 
+    private val _isFilteringCourt = MutableLiveData(false)
+    val isFilteringCourt: LiveData<Boolean> get() = _isFilteringCourt
+
     fun getAllTournaments() : Flow<List<TournamentEntity>> {
         return tournamentRepository.getAllTournaments()
+    }
+
+    fun getAllCourts() : Flow<List<CourtEntity>> {
+        return courtRepository.getAllCourts()
     }
 
      fun performQuery(query: String, tournaments : List<TournamentEntity>?) {
@@ -62,7 +85,6 @@ class SearchViewModel @Inject constructor(
              _filteredList.value = emptyList()
          }
     }
-
 
     fun filterCombineFilters(allTournaments : List<TournamentEntity>, category: String?, prize: String?, cost: String?, ubication: String?) {
         _filteredList.value = emptyList()
@@ -148,5 +170,45 @@ class SearchViewModel @Inject constructor(
     }
     fun setIsFiltering(isFiltering: Boolean){
         _isFiltering.value = isFiltering
+    }
+
+    fun setIsFilteringCourt(isFiltering: Boolean){
+        _isFiltering.value = isFiltering
+    }
+
+    fun filterCombineCourtFilters(allCourts: List<CourtEntity>, cost: String?, ubication: String?) {
+        _filteredCourtList.value = emptyList()
+        if (cost != null) {
+            filterCourtByCost(allCourts, cost)
+            if (ubication != null) {
+                filterCourtByUbication(_filteredCourtList.value!!, ubication)
+            }
+        } else if (ubication != null) {
+            filterCourtByUbication(allCourts, ubication)
+        } else {
+            _filteredCourtList.value = allCourts
+        }
+        _isFilteringCourt.value = true
+    }
+
+    private fun filterCourtByCost(allCourts : List<CourtEntity>, cost: String) {
+            filteredCourtCostListValue.clear()
+            filteredCourtCostListValue = when (cost) {
+                "De mas caro a mas barato" -> ArrayList(allCourts.sortedByDescending { it.bookCost })
+                "De mas barato a mas caro" -> ArrayList(allCourts.sortedBy { it.bookCost })
+                else -> ArrayList(allCourts) // Orden predeterminado si no coincide con ninguna opción
+            }
+            _filteredCourtList.value = filteredCourtCostListValue.toList()
+            //setIsFiltering(true)
+    }
+
+    fun filterCourtByUbication(allCourts : List<CourtEntity>, location: String) {
+        filteredCourtUbicationListValue.clear()
+        allCourts.forEach { court ->
+            if (court.province == location) {
+                filteredCourtUbicationListValue.add(court)
+            }
+            _filteredCourtList.value = filteredCourtUbicationListValue.toList()
+        }
     }
 }

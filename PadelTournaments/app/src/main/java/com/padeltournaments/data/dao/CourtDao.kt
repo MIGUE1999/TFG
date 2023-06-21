@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 interface CourtDao
 {
     @Query("SELECT * FROM court")
-    fun getAllCourts() : LiveData<List<CourtEntity>>
+    fun getAllCourts() : Flow<List<CourtEntity>>
 
     @Query("SELECT * FROM court WHERE id = :idCourt")
-    fun getCourtById(idCourt: Int) : LiveData<CourtEntity>
+    fun getCourtById(idCourt: Int) : CourtEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCourt(courtEntity: CourtEntity)
@@ -23,7 +23,7 @@ interface CourtDao
     @Delete
     suspend fun deleteCourt(courtEntity: CourtEntity)
     @Query("SELECT * FROM court WHERE organizerId IN (SELECT id FROM organizer WHERE userId = :idUser)")
-    suspend fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>>
+    fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>>
     @Query("SELECT organizer.clubName FROM court JOIN organizer ON court.organizerId = organizer.id WHERE organizer.userId = :idUser")
     suspend fun getClubNameByUserId(idUser: Int): String
 }

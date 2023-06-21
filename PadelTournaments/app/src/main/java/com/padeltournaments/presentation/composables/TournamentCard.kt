@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -27,6 +28,8 @@ import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.presentation.viewmodels.CreateCourtViewModel
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
 import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
+import kotlinx.coroutines.delay
+
 @Composable
 fun TournamentCard(isOrganizer : Boolean,
                    tournament : TournamentEntity,
@@ -164,9 +167,10 @@ fun CourtCard(isOrganizer : Boolean,
             idUser: Int
 ){
 
-    LaunchedEffect(idUser) {
-        createCourtViewModel.getClubNameByUserId(idUser)
-    }
+
+
+    createCourtViewModel.getClubNameByUserId(idUser)
+
 
     Card(shape = RoundedCornerShape(8.dp),
         elevation = 1.dp,
@@ -188,11 +192,11 @@ fun CourtCard(isOrganizer : Boolean,
                             style = MaterialTheme.typography.h5,
                             onClick = {
                                 val idCourt = court.id.toString()
-                                navController.navigate("tournament_detail/$idCourt")
+                                navController.navigate("court_detail/$idCourt")
                             })
                         Spacer(4)
 
-                        Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
                             Icon(painter = painterResource(id = R.drawable.ubicacion),
                                 contentDescription = null,
                                 tint = MaterialTheme.colors.onSurface,
@@ -202,8 +206,75 @@ fun CourtCard(isOrganizer : Boolean,
                             Text(court.ubication)
                         }
 
-                        Row(modifier = Modifier.fillMaxWidth(0.5f)) {
-                            Text("Numero de pista: $court.courtNumber")
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text("Numero de pista: " + court.courtNumber)
+                        }
+                    }
+
+                    if (isOrganizer) {
+                        IconButton(onClick = {
+                            val idCourt = court.id.toString()
+                            navController.navigate("edit_tournament/$idCourt")
+                        }) {
+                            Icon(Icons.Filled.Edit, "EditCourt")
+                        }
+                        IconButton(onClick = {
+                            createCourtViewModel.deleteCourt(court)
+                        }) {
+                            Icon(Icons.Filled.Delete, "DeleteCourt")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CourtSearchCard(isOrganizer : Boolean,
+              court : CourtEntity,
+              navController: NavHostController,
+              createCourtViewModel: CreateCourtViewModel,
+){
+    LaunchedEffect(Unit) {
+        delay(1000) // Espera de 2 segundos
+    }
+    Card(shape = RoundedCornerShape(8.dp),
+        elevation = 1.dp,
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .fillMaxWidth()
+    )
+    {
+        Column() {
+            Card(modifier = Modifier.fillMaxWidth(),
+                elevation = 18.dp) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                    ) {
+                        ClickableText(text = AnnotatedString(createCourtViewModel.clubNameState.value ),
+                            style = MaterialTheme.typography.h5,
+                            onClick = {
+                                val idCourt = court.id.toString()
+                                navController.navigate("court_detail/$idCourt")
+                            })
+                        Spacer(4)
+
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Icon(painter = painterResource(id = R.drawable.ubicacion),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.ubication)
+                        }
+
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Text("Numero de pista: " + court.courtNumber)
                         }
                     }
 

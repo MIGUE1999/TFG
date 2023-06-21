@@ -96,6 +96,76 @@ fun CreateCourtScreen(context : Context,
                     )
                 )
 
+                val andaluciaProvinces = listOf(
+                    "Almería",
+                    "Cádiz",
+                    "Córdoba",
+                    "Granada",
+                    "Huelva",
+                    "Jaén",
+                    "Málaga",
+                    "Sevilla"
+                )
+
+                var expanded by remember { mutableStateOf(false) }
+
+                if (!createCourtViewModel.validateProvince.value) {
+                    Text(
+                        text = createCourtViewModel.validateProvinceError,
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .fillMaxWidth(0.9f)
+                    )
+                }
+
+                Surface(
+                    elevation = 1.dp,
+                ) {
+                    Box {
+                        ClickableText(
+                            text = AnnotatedString(if (createCourtViewModel.province.value.isEmpty()) "Selecciona una provincia" else createCourtViewModel.province.value),
+                            onClick = { expanded = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp, horizontal = 12.dp)
+                        )
+
+                        IconButton(
+                            onClick = { expanded = true },
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(end = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowDropDown,
+                                contentDescription = "Desplegar menú",
+                                tint = MaterialTheme.colors.primary
+                            )
+                        }
+                    }
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    andaluciaProvinces.forEach { province ->
+                        DropdownMenuItem(
+                            onClick = {
+                                createCourtViewModel.onProvinceChanged(province)
+                                expanded = false
+                            }
+                        ) {
+                            Text(text = province)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 CustomTextInput(
                     value = createCourtViewModel.courtNumber.value,
                     onValueChange = {createCourtViewModel.onCourtNumberChange(it) },
@@ -103,7 +173,22 @@ fun CreateCourtScreen(context : Context,
                     showError = !createCourtViewModel.validateCourtNumber.value,
                     errorMessage = createCourtViewModel.validateCourtNumberError,
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {focusManager.moveFocus(FocusDirection.Down)}
+                    )
+                )
+
+                CustomTextInput(
+                    value = createCourtViewModel.bookCost.value,
+                    onValueChange = {createCourtViewModel.onBookCostChange(it) },
+                    label = "Coste Reserva(1 hora)",
+                    showError = !createCourtViewModel.validateBookCost.value,
+                    errorMessage = createCourtViewModel.validateBookCostError,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
                     ),
                     keyboardActions = KeyboardActions(
@@ -119,7 +204,9 @@ fun CreateCourtScreen(context : Context,
                             val courtEntity = CourtEntity(ubication= createCourtViewModel.ubication.value,
                             courtNumber = createCourtViewModel.courtNumber.value,
                             organizerId = idOrg,
-                            reservedHours = listOf<String>())
+                            reservedHours = listOf<String>(),
+                            bookCost = createCourtViewModel.bookCost.value.toInt(),
+                            province = createCourtViewModel.province.value)
                             createCourtViewModel.insertCourt(courtEntity)
                             navController.navigate(NavigationScreens.HomeOrganizer.route)
                         }

@@ -12,4 +12,5 @@ interface IOrganizerRepository {
     suspend fun deleteOrganizer(organizerEntity: OrganizerEntity)
     fun getOrganizerWithTournaments(idOrganizer : Int) : List<OrganizerWithTournaments>
     fun getOrganizerByUserId(userId : Int) : OrganizerEntity
+    suspend fun getClubNameById(idOrganizer: Int): String?
 }

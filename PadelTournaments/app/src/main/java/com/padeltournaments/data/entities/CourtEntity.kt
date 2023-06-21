@@ -11,6 +11,8 @@ data class CourtEntity(
     val ubication: String,
     val courtNumber: String,
     val organizerId: Int,
-    val reservedHours: List<String>
+    val reservedHours: List<String>,
+    val bookCost: Int,
+    val province: String
 )
 

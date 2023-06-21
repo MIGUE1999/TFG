@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.entities.TournamentEntity
 import com.padeltournaments.presentation.viewmodels.SearchViewModel
 
@@ -107,9 +108,7 @@ fun FilterLazyRow(
                             searchViewModel.ubication
                         )
                         searchViewModel.setIsFiltering(true)
-                    },
-                    searchViewModel = searchViewModel,
-                    allTournaments = allTournaments
+                    }
                 )
             }
         }
@@ -122,9 +121,7 @@ fun CustomDropdownMenu(
     defaultSelected: String,
     color: Color,
     modifier: Modifier,
-    onSelected: (String) -> Unit,
-    searchViewModel: SearchViewModel = hiltViewModel(),
-    allTournaments: List<TournamentEntity>
+    onSelected: (String) -> Unit
 ) {
     var expand by remember { mutableStateOf(false) }
     var stroke by remember { mutableStateOf(1) }

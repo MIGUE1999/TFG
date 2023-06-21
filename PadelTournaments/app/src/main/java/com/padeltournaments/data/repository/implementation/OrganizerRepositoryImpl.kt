@@ -28,4 +28,8 @@ class OrganizerRepositoryImpl @Inject constructor(private val organizerDao : Org
     override fun getOrganizerByUserId(userId: Int): OrganizerEntity {
         return organizerDao.getOrganizerByUserId(userId)
     }
+
+    override suspend fun getClubNameById(idOrganizer: Int): String?{
+        return organizerDao.getClubNameById(idOrganizer)
+    }
 }

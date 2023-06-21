@@ -7,10 +7,10 @@ import com.padeltournaments.data.repository.interfaces.ICourtRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 class CourtRepositoryImpl @Inject constructor(private val courtDao : CourtDao): ICourtRepository {
-    override fun getAllCourts(): LiveData<List<CourtEntity>> {
+    override fun getAllCourts(): Flow<List<CourtEntity>> {
         return courtDao.getAllCourts()
     }
-    override fun getCourtById(idCourt: Int): LiveData<CourtEntity> {
+    override fun getCourtById(idCourt: Int): CourtEntity {
         return courtDao.getCourtById(idCourt)
     }
     override suspend fun insertCourt(courtEntity: CourtEntity) {
@@ -26,7 +26,7 @@ class CourtRepositoryImpl @Inject constructor(private val courtDao : CourtDao): 
         return courtDao.getClubNameByUserId(idUser)
     }
 
-    override suspend fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>> {
+    override fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>> {
         return courtDao.getCourtsByUserId(idUser)
     }
 }

@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.entities.TournamentEntity
 import com.padeltournaments.data.repository.interfaces.ICourtRepository
-import com.padeltournaments.data.repository.interfaces.IOrganizerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -17,9 +16,8 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CreateCourtViewModel @Inject constructor(
-    private val courtRepository : ICourtRepository,
-    private val organizerRepository: IOrganizerRepository
+class CourtDetailViewModel @Inject constructor(
+    private val courtRepository : ICourtRepository
 ) : ViewModel() {
 
     private val _userId = MutableStateFlow(-1)
@@ -45,23 +43,17 @@ class CreateCourtViewModel @Inject constructor(
     val reservedHours = mutableStateOf(listOf<String>())
     val date = mutableStateOf("")
     val bookCost = mutableStateOf("")
-    val province = mutableStateOf("")
-
 
     val validateUbication = mutableStateOf(true)
     val validateCourtNumber = mutableStateOf(true)
     val validateDate = mutableStateOf(true)
     val validateBookCost = mutableStateOf(true)
-    val validateProvince = mutableStateOf(true)
-
 
 
     val validateUbicationError = "Introduzca una ubicacion valida"
     val validateCourtNumberError = "Introduzca un numero de pista valido"
     val validateDateError = "Introduzca la fecha correcta"
     val validateBookCostError = "Introduzca la fecha correcta"
-    val validateProvinceError = "Introduzca la fecha correcta"
-
 
     fun insertCourt(court: CourtEntity) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -97,7 +89,6 @@ class CreateCourtViewModel @Inject constructor(
         validateUbication.value = ubication.value.isNotBlank()
         validateCourtNumber.value = courtNumber.value.isNotBlank()
         validateBookCost.value = validateBookCost.value.toString().isNotBlank()
-        validateProvince.value = province.value.isNotBlank()
         if (date.value != "") {
             val format = SimpleDateFormat("dd/MM/yyyy")
             val date = format.parse(date.value)
@@ -111,7 +102,8 @@ class CreateCourtViewModel @Inject constructor(
 
         return validateUbication.value &&
                 validateCourtNumber.value &&
-                validateBookCost.value && validateProvince.value
+                validateDate.value &&
+                validateBookCost.value
     }
 
     fun getClubNameByUserId(idUser: Int) {
@@ -121,19 +113,12 @@ class CreateCourtViewModel @Inject constructor(
         }
     }
 
-    fun getClubNameByOrganizerId(idOrg: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            clubNameState.value = organizerRepository.getOrganizerById(idOrg)?.clubName.toString()
-        }
-    }
-
 
     private fun setCourt(court: CourtEntity){
         courtNumber.value = court.courtNumber
         ubication.value = court.ubication
         reservedHours.value = court.reservedHours
         bookCost.value = court.bookCost.toString()
-        province.value = court.province
     }
 
     fun setCourtById(idCourt: Int){
@@ -145,10 +130,6 @@ class CreateCourtViewModel @Inject constructor(
 
     fun onDateChanged(date : String){
         this.date.value = date
-    }
-
-    fun onProvinceChanged(province : String){
-        this.province.value = province
     }
 
 }

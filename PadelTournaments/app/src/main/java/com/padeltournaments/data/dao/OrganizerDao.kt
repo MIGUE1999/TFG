@@ -42,6 +42,9 @@ interface OrganizerDao {
     fun getTournamentsByCategory(category: String) : LiveData<List<OrganizerWithTournaments>>
 
 
+    @Query("SELECT clubName FROM organizer WHERE id = :idOrganizer")
+    suspend fun getClubNameById(idOrganizer: Int): String?
+
     /*
     @Transaction
     @Query("SELECT * FROM organizador WHERE id = :idOrganizator")
