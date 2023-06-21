@@ -17,7 +17,9 @@ import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.entities.TournamentEntity
+import com.padeltournaments.presentation.composables.CourtList
 import com.padeltournaments.presentation.composables.Spacer
 import com.padeltournaments.presentation.composables.scaffold.BottomBar
 import com.padeltournaments.presentation.composables.scaffold.FAB
@@ -26,6 +28,7 @@ import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
 import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.organizerScreens
 import com.padeltournaments.presentation.composables.TournamentList
+import com.padeltournaments.presentation.viewmodels.CreateCourtViewModel
 
 
 @Composable
@@ -57,7 +60,9 @@ fun Tab(selected: Boolean, onClick: () -> Unit, text: String, modifier: Modifier
 @Composable
 fun TabBar(navController : NavHostController,
             tournaments: List<TournamentEntity>,
-            homeOrganizerViewModel: HomeOrganizerViewModel) {
+            courts: List<CourtEntity>,
+            homeOrganizerViewModel: HomeOrganizerViewModel,
+            session: LoginPref) {
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -100,24 +105,27 @@ fun TabBar(navController : NavHostController,
             HomeOrganizerContent(navController = navController, tournaments)
         } else {
             homeOrganizerViewModel.isTournamentList.value = false
-            Text(text = "Contenido para la pestaña 'Pistas'")
+            HomeOrganizerContentCourt(navController = navController, courts = courts, session = session)
         }
     }
 }
 @Composable
 fun HomeOrganizerScreen(session : LoginPref,
                         homeOrganizerViewModel : HomeOrganizerViewModel = hiltViewModel(),
+                        createCourtViewModel: CreateCourtViewModel = hiltViewModel(),
                         navController : NavHostController)
 {
     val userId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
 
     homeOrganizerViewModel.setUserId(userId)
+    createCourtViewModel.setUserId(userId)
 
     val tournaments by homeOrganizerViewModel.tournamentsByUserId.collectAsState(emptyList())
+    val courts by createCourtViewModel.courtsByUserId.collectAsState(emptyList())
 
     Scaffold(bottomBar = { BottomBar(navController = navController, organizerScreens) },
              content = {
-                     TabBar(navController = navController, tournaments = tournaments, homeOrganizerViewModel = homeOrganizerViewModel)
+                     TabBar(navController = navController, tournaments = tournaments, courts = courts, homeOrganizerViewModel = homeOrganizerViewModel, session = session)
              },
              floatingActionButton = { FAB(navController = navController, isListTournaments = homeOrganizerViewModel.isTournamentList.value) }
         )
@@ -131,6 +139,18 @@ fun HomeOrganizerContent(navController: NavHostController, tournaments : List<To
     {
         Spacer()
         TournamentList(isOrganizer = true, navController = navController, tournaments = tournaments)
+    }
+}
+
+@Composable
+fun HomeOrganizerContentCourt(navController: NavHostController, courts : List<CourtEntity>, session: LoginPref){
+    Column(horizontalAlignment = CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight(0.9f)
+            .fillMaxWidth())
+    {
+        Spacer()
+        CourtList(isOrganizer = true, navController = navController, courts = courts, session = session)
     }
 }
 

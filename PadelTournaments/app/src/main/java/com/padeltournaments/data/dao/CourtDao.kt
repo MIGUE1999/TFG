@@ -3,6 +3,7 @@ package com.padeltournaments.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.padeltournaments.data.entities.CourtEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourtDao
@@ -21,4 +22,8 @@ interface CourtDao
 
     @Delete
     suspend fun deleteCourt(courtEntity: CourtEntity)
+    @Query("SELECT * FROM court WHERE organizerId IN (SELECT id FROM organizer WHERE userId = :idUser)")
+    suspend fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>>
+    @Query("SELECT organizer.clubName FROM court JOIN organizer ON court.organizerId = organizer.id WHERE organizer.userId = :idUser")
+    suspend fun getClubNameByUserId(idUser: Int): String
 }

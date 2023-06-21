@@ -13,7 +13,7 @@ import com.padeltournaments.util.Converters
     TournamentPlayerRelation::class
     //OrganizatorWithTournaments::class
 ],
-    version = 10,
+    version = 16,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -26,5 +26,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val inscriptionDao : InscriptionDao
     abstract val bookingDao : BookingDao
     abstract val tournamentPlayerRelationDao: TournamentPlayerRelationDao
+
     //abstract val organizatorWithTournaments : OrganizatorWithTournaments
 }

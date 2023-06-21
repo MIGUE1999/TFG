@@ -15,12 +15,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.padeltournaments.R
+import com.padeltournaments.data.entities.CourtEntity
+import com.padeltournaments.presentation.viewmodels.CreateCourtViewModel
 import com.padeltournaments.presentation.viewmodels.CreateTournamentViewModel
 import com.padeltournaments.presentation.viewmodels.HomeOrganizerViewModel
 @Composable
@@ -151,3 +155,74 @@ fun TournamentCard(isOrganizer : Boolean,
         }
     }
 }
+
+@Composable
+fun CourtCard(isOrganizer : Boolean,
+            court : CourtEntity,
+            navController: NavHostController,
+            createCourtViewModel: CreateCourtViewModel = hiltViewModel(),
+            idUser: Int
+){
+
+    LaunchedEffect(idUser) {
+        createCourtViewModel.getClubNameByUserId(idUser)
+    }
+
+    Card(shape = RoundedCornerShape(8.dp),
+        elevation = 1.dp,
+        modifier = Modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .fillMaxWidth()
+    )
+    {
+        Column() {
+            Card(modifier = Modifier.fillMaxWidth(),
+                elevation = 18.dp) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                    ) {
+                        ClickableText(text = AnnotatedString(createCourtViewModel.clubNameState.value),
+                            style = MaterialTheme.typography.h5,
+                            onClick = {
+                                val idCourt = court.id.toString()
+                                navController.navigate("tournament_detail/$idCourt")
+                            })
+                        Spacer(4)
+
+                        Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                            Icon(painter = painterResource(id = R.drawable.ubicacion),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.ubication)
+                        }
+
+                        Row(modifier = Modifier.fillMaxWidth(0.5f)) {
+                            Text("Numero de pista: $court.courtNumber")
+                        }
+                    }
+
+                    if (isOrganizer) {
+                        IconButton(onClick = {
+                            val idCourt = court.id.toString()
+                            navController.navigate("edit_tournament/$idCourt")
+                        }) {
+                            Icon(Icons.Filled.Edit, "EditCourt")
+                        }
+                        IconButton(onClick = {
+                            createCourtViewModel.deleteCourt(court)
+                        }) {
+                            Icon(Icons.Filled.Delete, "DeleteCourt")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

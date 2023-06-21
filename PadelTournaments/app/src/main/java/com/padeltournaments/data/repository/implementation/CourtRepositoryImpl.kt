@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.padeltournaments.data.dao.CourtDao
 import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.repository.interfaces.ICourtRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 class CourtRepositoryImpl @Inject constructor(private val courtDao : CourtDao): ICourtRepository {
     override fun getAllCourts(): LiveData<List<CourtEntity>> {
@@ -20,5 +21,12 @@ class CourtRepositoryImpl @Inject constructor(private val courtDao : CourtDao): 
     }
     override suspend fun deleteCourt(courtEntity: CourtEntity) {
         courtDao.deleteCourt(courtEntity)
+    }
+    override suspend fun getClubNameByUserId(idUser: Int): String{
+        return courtDao.getClubNameByUserId(idUser)
+    }
+
+    override suspend fun getCourtsByUserId(idUser: Int): Flow<List<CourtEntity>> {
+        return courtDao.getCourtsByUserId(idUser)
     }
 }
