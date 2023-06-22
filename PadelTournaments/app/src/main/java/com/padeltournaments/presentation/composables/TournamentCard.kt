@@ -185,7 +185,7 @@ fun CourtCard(isOrganizer : Boolean,
                     Column(modifier = Modifier
                         .fillMaxWidth(fraction = 0.8f)
                     ) {
-                        ClickableText(text = AnnotatedString(createCourtViewModel.clubNameState.value),
+                        ClickableText(text = AnnotatedString(createCourtViewModel.clubNameState.value.uppercase() + " PISTA " + court.courtNumber),
                             style = MaterialTheme.typography.h5,
                             onClick = {
                                 val idCourt = court.id.toString()
@@ -202,9 +202,24 @@ fun CourtCard(isOrganizer : Boolean,
                             Spacer(3)
                             Text(court.ubication)
                         }
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Icon(painter = painterResource(id = R.drawable.ubicacion),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.province)
+                        }
 
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            Text("Numero de pista: " + court.courtNumber)
+                            Icon(painter = painterResource(id = R.drawable.money),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.bookCost.toString() + '\u20AC')
                         }
                     }
 
@@ -252,7 +267,7 @@ fun CourtSearchCard(isOrganizer : Boolean,
                         .fillMaxWidth(fraction = 0.8f)
                     ) {
 
-                        ClickableText(text = AnnotatedString(text = clubName),
+                        ClickableText(text = AnnotatedString(text = clubName.uppercase() +" PISTA " + court.courtNumber),
                             style = MaterialTheme.typography.h5,
                             onClick = {
                                 val idCourt = court.id.toString()
@@ -271,7 +286,23 @@ fun CourtSearchCard(isOrganizer : Boolean,
                         }
 
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            Text("Numero de pista: " + court.courtNumber)
+                            Icon(painter = painterResource(id = R.drawable.ubicacion),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.province)
+                        }
+
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            Icon(painter = painterResource(id = R.drawable.money),
+                                contentDescription = null,
+                                tint = MaterialTheme.colors.onSurface,
+                                modifier = Modifier.size(25.dp)
+                            )
+                            Spacer(3)
+                            Text(court.bookCost.toString() + '\u20AC')
                         }
                     }
 

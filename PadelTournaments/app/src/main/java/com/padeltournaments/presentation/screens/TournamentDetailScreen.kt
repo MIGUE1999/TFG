@@ -195,8 +195,16 @@ fun TournamentDetailSection(
                 Spacer(modifier = Modifier.height(24.dp))
                 PayButton(
                     tournamentInfo.inscriptionCost.value,
-                    isPlayerInTournament = isPlayerInTournament
+                    isPlayerInTournament = isPlayerInTournament,
                 )
+            } else {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    PayButton(
+                        tournamentInfo.inscriptionCost.value,
+                        isPlayerInTournament = true,
+                        isOrg = true
+                    )
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -317,13 +325,18 @@ private fun TournamentDetailHeader(
 }
 @Composable
 fun PayButton( inscriptionCost: String,
-               isPlayerInTournament: Boolean) {
+               isPlayerInTournament: Boolean,
+               isOrg: Boolean = false) {
     val euroSymbol = '\u20AC'
     val context = LocalContext.current
     val activity = context as Activity
     var text = "INSCRIBIRME - $inscriptionCost $euroSymbol"
     if (isPlayerInTournament) {
         text = "INSCRITO"
+    }
+
+    if (isOrg){
+        text = "PRECIO - $inscriptionCost $euroSymbol"
     }
     Button(onClick = {
                      val razorPayments = RazorPayments(activity)

@@ -20,32 +20,37 @@ import com.padeltournaments.data.entities.UserEntity
 fun ProfilesBookedLazyRow(
     profiles: List<UserEntity>
 ) {
-    LazyRow(modifier = Modifier.fillMaxWidth().height(150.dp)) {
-        items(items = profiles) { profile ->
-            Column(
-                modifier = Modifier.padding(start = 12.dp, end = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                profile.photo?.let {
-                    RoundImage(
-                        image = it,
-                        modifier = Modifier
-                            .fillMaxHeight(0.7f)
-                            .weight(1f)
+    LazyRow(modifier = Modifier
+        .fillMaxWidth()
+        .height(150.dp)) {
+        if (profiles.isNotEmpty()) {
+            items(items = profiles) { profile ->
+                Column(
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    profile.photo?.let {
+                        RoundImage(
+                            image = it,
+                            modifier = Modifier
+                                .fillMaxHeight(0.7f)
+                                .weight(1f)
+                        )
+                    }
+                    Text(
+                        text = profile.name.uppercase() + "\n" + profile.surname.uppercase(),
+                        style = TextStyle(
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
-                Text(
-                    text = profile.name.uppercase()+ "\n" + profile.surname.uppercase(),
-                    style = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier.padding(top = 4.dp)
-                )
             }
         }
     }
+
 }
 
 
