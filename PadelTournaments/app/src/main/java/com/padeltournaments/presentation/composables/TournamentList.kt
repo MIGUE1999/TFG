@@ -55,14 +55,13 @@ fun CourtList(navController: NavHostController,
             if (isOrganizer) {
                 LazyColumn {
                     items(items = courts) { court ->
-                        if (idUser != null) {
                             CourtCard(
                                 isOrganizer = true,
                                 court,
                                 navController,
                                 idUser = idUser
                             )
-                        }
+
                     }
                 }
             } else {
@@ -79,7 +78,7 @@ fun CourtList(navController: NavHostController,
                         val clubName by createCourtViewModel.getClubNameByOrganizerId(court.organizerId).collectAsState(initial = "")
 
                         CourtSearchCard(
-                            isOrganizer = true,
+                            isOrganizer = false,
                             court,
                             navController, createCourtViewModel, clubName)
 
