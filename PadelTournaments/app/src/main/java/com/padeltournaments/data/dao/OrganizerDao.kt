@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.padeltournaments.data.entities.OrganizerEntity
 import com.padeltournaments.data.entities.relations.OrganizerWithTournaments
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrganizerDao {
@@ -43,7 +44,7 @@ interface OrganizerDao {
 
 
     @Query("SELECT clubName FROM organizer WHERE id = :idOrganizer")
-    suspend fun getClubNameById(idOrganizer: Int): String?
+    fun getClubNameByOrganizerId(idOrganizer: Int): Flow<String>
 
     /*
     @Transaction

@@ -5,6 +5,9 @@ import com.padeltournaments.data.dao.OrganizerDao
 import com.padeltournaments.data.entities.OrganizerEntity
 import com.padeltournaments.data.entities.relations.OrganizerWithTournaments
 import com.padeltournaments.data.repository.interfaces.IOrganizerRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 class OrganizerRepositoryImpl @Inject constructor(private val organizerDao : OrganizerDao): IOrganizerRepository {
     override fun getAllOrganizers(): LiveData<List<OrganizerEntity>> {
@@ -28,8 +31,7 @@ class OrganizerRepositoryImpl @Inject constructor(private val organizerDao : Org
     override fun getOrganizerByUserId(userId: Int): OrganizerEntity {
         return organizerDao.getOrganizerByUserId(userId)
     }
-
-    override suspend fun getClubNameById(idOrganizer: Int): String?{
-        return organizerDao.getClubNameById(idOrganizer)
-    }
+    override fun getClubNameByOrganizerId(idOrg: Int): Flow<String> {
+            return organizerDao.getClubNameByOrganizerId(idOrg)
+        }
 }

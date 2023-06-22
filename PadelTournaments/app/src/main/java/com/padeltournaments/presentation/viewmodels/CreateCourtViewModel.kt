@@ -12,6 +12,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -121,10 +123,8 @@ class CreateCourtViewModel @Inject constructor(
         }
     }
 
-    fun getClubNameByOrganizerId(idOrg: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            clubNameState.value = organizerRepository.getOrganizerById(idOrg)?.clubName.toString()
-        }
+    fun getClubNameByOrganizerId(idOrg: Int): Flow<String> {
+        return organizerRepository.getClubNameByOrganizerId(idOrg)
     }
 
 

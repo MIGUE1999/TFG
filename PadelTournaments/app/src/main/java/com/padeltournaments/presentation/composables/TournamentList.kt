@@ -3,6 +3,9 @@ package com.padeltournaments.presentation.composables
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.padeltournaments.data.entities.CourtEntity
@@ -40,10 +43,10 @@ fun TournamentList(navController: NavHostController,
 
 @Composable
 fun CourtList(navController: NavHostController,
-                   isOrganizer : Boolean,
-                   courts : List<CourtEntity>?,
-                   idUser: Int,
-                    isSearch: Boolean,
+              isOrganizer : Boolean,
+              courts : List<CourtEntity>?,
+              idUser: Int,
+              isSearch: Boolean,
               createCourtViewModel: CreateCourtViewModel = hiltViewModel()
 ) {
 
@@ -73,20 +76,20 @@ fun CourtList(navController: NavHostController,
             if (isOrganizer) {
                 LazyColumn {
                     items(items = courts) { court ->
-                        createCourtViewModel.getClubNameByOrganizerId(court.organizerId)
+                        val clubName by createCourtViewModel.getClubNameByOrganizerId(court.organizerId).collectAsState(initial = "")
 
-                            CourtSearchCard(
-                                isOrganizer = true,
-                                court,
-                                navController, createCourtViewModel )
+                        CourtSearchCard(
+                            isOrganizer = true,
+                            court,
+                            navController, createCourtViewModel, clubName)
 
                     }
                 }
             } else {
                 LazyColumn {
                     items(items = courts) { court ->
-                        createCourtViewModel.getClubNameByOrganizerId(court.organizerId)
-                        CourtSearchCard(isOrganizer = false, court, navController, createCourtViewModel)
+                        val clubName by createCourtViewModel.getClubNameByOrganizerId(court.organizerId).collectAsState(initial = "")
+                        CourtSearchCard(isOrganizer = false, court, navController, createCourtViewModel, clubName)
                     }
                 }
             }

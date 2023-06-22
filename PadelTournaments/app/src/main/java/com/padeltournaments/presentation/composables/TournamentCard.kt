@@ -3,7 +3,6 @@ package com.padeltournaments.presentation.composables
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -15,9 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
@@ -235,10 +232,9 @@ fun CourtSearchCard(isOrganizer : Boolean,
               court : CourtEntity,
               navController: NavHostController,
               createCourtViewModel: CreateCourtViewModel,
+                    clubName: String
 ){
-    LaunchedEffect(Unit) {
-        delay(1000) // Espera de 2 segundos
-    }
+
     Card(shape = RoundedCornerShape(8.dp),
         elevation = 1.dp,
         modifier = Modifier
@@ -255,7 +251,8 @@ fun CourtSearchCard(isOrganizer : Boolean,
                     Column(modifier = Modifier
                         .fillMaxWidth(fraction = 0.8f)
                     ) {
-                        ClickableText(text = AnnotatedString(createCourtViewModel.clubNameState.value ),
+
+                        ClickableText(text = AnnotatedString(text = clubName),
                             style = MaterialTheme.typography.h5,
                             onClick = {
                                 val idCourt = court.id.toString()
