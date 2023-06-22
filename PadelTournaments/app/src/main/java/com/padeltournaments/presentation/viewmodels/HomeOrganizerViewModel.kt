@@ -5,10 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.TournamentEntity
-import com.padeltournaments.data.repository.interfaces.IOrganizerRepository
-import com.padeltournaments.data.repository.interfaces.IPlayerRepository
-import com.padeltournaments.data.repository.interfaces.ITournamentPlayerRelationRepository
-import com.padeltournaments.data.repository.interfaces.ITournamentRepository
+import com.padeltournaments.data.entities.relations.CourtPlayerCrossRef
+import com.padeltournaments.data.repository.implementation.CourtPlayerCrossRefRepository
+import com.padeltournaments.data.repository.interfaces.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -18,7 +17,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeOrganizerViewModel @Inject constructor(
     private val tournamentRepository : ITournamentRepository,
-    private val tournamentPlayerRelationRepository: ITournamentPlayerRelationRepository
+    private val tournamentPlayerRelationRepository: ITournamentPlayerRelationRepository,
+    private val courtPlayerCrossRefRepository: ICourtPlayerCrossRefRepository,
+    private val playerRepository: IPlayerRepository
 ) : ViewModel() {
 
     private val _userId = MutableStateFlow(-1)
@@ -69,4 +70,22 @@ class HomeOrganizerViewModel @Inject constructor(
         }
     }
 */
+
+
+
+    private val _crossRefsByPlayerId = MutableStateFlow<List<CourtPlayerCrossRef>>(emptyList())
+    val crossRefsByPlayerId: StateFlow<List<CourtPlayerCrossRef>> = _crossRefsByPlayerId
+
+    fun getCrossRefsByUserId(userId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val player = playerRepository.getPlayerByUserId(userId)
+
+            if (player != null) {
+                courtPlayerCrossRefRepository.getCrossRefsByPlayerId(player.id)
+                    .collect { crossRefs ->
+                        _crossRefsByPlayerId.value = crossRefs
+                    }
+            }
+        }
+    }
 }

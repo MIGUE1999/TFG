@@ -23,4 +23,5 @@ interface CourtPlayerCrossRefDao {
 
     @Query("SELECT * FROM court_player WHERE playerId = :playerId")
     fun getCrossRefsByPlayerId(playerId: Int): Flow<List<CourtPlayerCrossRef>>
+
 }

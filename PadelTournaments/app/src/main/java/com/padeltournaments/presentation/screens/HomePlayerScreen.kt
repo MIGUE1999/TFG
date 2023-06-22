@@ -14,6 +14,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.entities.TournamentEntity
+import com.padeltournaments.data.entities.relations.CourtPlayerCrossRef
+import com.padeltournaments.presentation.composables.CourtList
+import com.padeltournaments.presentation.composables.CourtPlayerCrossRefList
 import com.padeltournaments.presentation.composables.Spacer
 import com.padeltournaments.presentation.composables.TournamentList
 import com.padeltournaments.presentation.composables.scaffold.BottomBar
@@ -106,13 +109,29 @@ fun TabBarPlayer(navController : NavHostController,
             HomePlayerContent(navController = navController, tournaments)
         } else {
             homeOrganizerViewModel.isTournamentList.value = false
-            HomeOrganizerContentCourt(
+            val crossRefs by homeOrganizerViewModel.crossRefsByPlayerId.collectAsState()
+
+            // Obtener la lista de CourtPlayerCrossRef por UserId
+            homeOrganizerViewModel.getCrossRefsByUserId(idUser)
+            HomePlayerContentCourt(
                 navController = navController,
-                courts = courts,
+                courtPlayerCrossRefsList = crossRefs,
                 idUser = idUser
             )
         }
 
     }
 
+}
+
+@Composable
+fun HomePlayerContentCourt(navController: NavHostController, courtPlayerCrossRefsList : List<CourtPlayerCrossRef>, idUser: Int){
+    Column(horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxHeight(0.9f)
+            .fillMaxWidth())
+    {
+        Spacer()
+        CourtPlayerCrossRefList(courtsPlayerCrossRef = courtPlayerCrossRefsList)
+    }
 }
