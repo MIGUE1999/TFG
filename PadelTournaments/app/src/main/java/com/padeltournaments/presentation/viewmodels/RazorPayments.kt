@@ -21,4 +21,17 @@ class RazorPayments(private val activity: Activity) {
 
         checkout.open(activity, options)
     }
+
+    fun startCourtPayment(amount: Int) {
+        val checkout = Checkout()
+        checkout.setKeyID(KEY_API_KEY)
+
+        val options = JSONObject()
+        options.put("name", "Padel Tournaments")
+        options.put("description", "Reservar pista")
+        options.put("amount", amount * 100) // El monto debe ser en céntimos, por lo que se multiplica por 100
+        options.put("currency", "EUR") // Cambia al código de tu moneda
+
+        checkout.open(activity, options)
+    }
 }

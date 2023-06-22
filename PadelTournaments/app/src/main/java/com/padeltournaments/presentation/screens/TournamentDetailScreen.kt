@@ -328,6 +328,7 @@ fun PayButton( inscriptionCost: String,
     Button(onClick = {
                      val razorPayments = RazorPayments(activity)
                     razorPayments.startPayment(inscriptionCost.toInt())
+                    PaymentSucceed.isBookCourt = false
     },
         enabled = !isPlayerInTournament,
         modifier = Modifier

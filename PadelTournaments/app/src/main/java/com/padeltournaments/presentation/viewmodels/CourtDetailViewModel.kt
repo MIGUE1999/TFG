@@ -6,9 +6,15 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.padeltournaments.data.entities.CourtEntity
 import com.padeltournaments.data.entities.TournamentEntity
+import com.padeltournaments.data.entities.relations.CourtPlayerCrossRef
+import com.padeltournaments.data.repository.implementation.CourtPlayerCrossRefRepository
+import com.padeltournaments.data.repository.interfaces.ICourtPlayerCrossRefRepository
 import com.padeltournaments.data.repository.interfaces.ICourtRepository
+import com.padeltournaments.data.repository.interfaces.IPlayerRepository
+import com.padeltournaments.util.PaymentSucceed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -17,7 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CourtDetailViewModel @Inject constructor(
-    private val courtRepository : ICourtRepository
+    private val courtRepository : ICourtRepository,
+    private val courtPlayerCrossRefRepository: ICourtPlayerCrossRefRepository,
+    private val playerRepository: IPlayerRepository
 ) : ViewModel() {
 
     private val _userId = MutableStateFlow(-1)
@@ -43,6 +51,8 @@ class CourtDetailViewModel @Inject constructor(
     val reservedHours = mutableStateOf(listOf<String>())
     val date = mutableStateOf("")
     val bookCost = mutableStateOf("")
+    val idCourt = mutableStateOf("")
+    val freeHour = mutableStateOf("")
 
     val validateUbication = mutableStateOf(true)
     val validateCourtNumber = mutableStateOf(true)
@@ -115,6 +125,7 @@ class CourtDetailViewModel @Inject constructor(
 
 
     private fun setCourt(court: CourtEntity){
+        idCourt.value = court.id.toString()
         courtNumber.value = court.courtNumber
         ubication.value = court.ubication
         reservedHours.value = court.reservedHours
@@ -131,5 +142,20 @@ class CourtDetailViewModel @Inject constructor(
     fun onDateChanged(date : String){
         this.date.value = date
     }
+
+    fun insertCourtPlayerCrossRef(userId: Int, dateTime: String){
+        viewModelScope.launch(Dispatchers.IO){
+            val player = playerRepository.getPlayerByUserId(userId)
+            val crossRef = player?.let { CourtPlayerCrossRef(courtId = idCourt.value.toInt(), playerId = it.id, bookedDateAndHour = dateTime) }
+            if (crossRef != null) {
+                courtPlayerCrossRefRepository.insert(crossRef)
+            }
+        }
+    }
+
+    val bookCourtSuccess: Flow<Boolean>
+        get() = flow {
+            emit(PaymentSucceed.bookCourtSucceed)
+        }.distinctUntilChanged()
 
 }

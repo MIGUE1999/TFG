@@ -100,6 +100,25 @@ fun CourtDetailSection(
     navController: NavController,
     context: Context
 ) {
+    val userId = session.getUserDetails()[(LoginPref.KEY_ID)]!!.toInt()
+
+    val bookCourtSuccess by courtDetailViewModel.bookCourtSuccess.collectAsState(false)
+
+
+    DisposableEffect(bookCourtSuccess) {
+        print("hOLA")
+        if (bookCourtSuccess) {
+            if (courtDetailViewModel.idCourt.value != "" && userId != -1) {
+                val bookedDateHour = courtDetailViewModel.date.value + " " + courtDetailViewModel.freeHour.value
+                courtDetailViewModel.insertCourtPlayerCrossRef(userId, bookedDateHour)
+                PaymentSucceed.bookCourtSucceed = false
+            }
+        }
+
+        onDispose {
+            // Limpiar el efecto y restablecer el estado de PaymentSucceed.bookCourtSucceed
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -176,6 +195,7 @@ fun CourtDetailSection(
 
 @Composable
 fun CourtDateSection(courtDetailViewModel: CourtDetailViewModel) {
+    var isBoxSelected by remember {mutableStateOf(false)}
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -188,24 +208,28 @@ fun CourtDateSection(courtDetailViewModel: CourtDetailViewModel) {
             val hoursList = listOf(
                 "08:00", "09:00", "10:00", "11:00", "12:00",
             )
-
             hoursList.forEach { freeHours ->
-                if (!courtDetailViewModel.reservedHours.value.contains(freeHours)) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clip(CircleShape)
-                            .background(color = MaterialTheme.colors.primary)
-                            .height(35.dp)
-                    ) {
-                        Text(
-                            text = freeHours,
-                            color = Color.White,
-                            fontSize = 18.sp
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color = if (isBoxSelected && freeHours == courtDetailViewModel.freeHour.value) Color.Gray else MaterialTheme.colors.primary
                         )
-                    }
+                        .height(35.dp)
+                        .clickable() { // Solo se puede hacer clic si no está seleccionado
+                            isBoxSelected = true
+                            courtDetailViewModel.freeHour.value = freeHours
+                        }
+                ) {
+                    Text(
+                        text = freeHours,
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
                 }
+
             }
         }
 
@@ -223,22 +247,27 @@ fun CourtDateSection(courtDetailViewModel: CourtDetailViewModel) {
             )
 
             hoursList.forEach { freeHours ->
-                if (!courtDetailViewModel.reservedHours.value.contains(freeHours)) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clip(CircleShape)
-                            .background(color = MaterialTheme.colors.primary)
-                            .height(35.dp)
-                    ) {
-                        Text(
-                            text = freeHours,
-                            color = Color.White,
-                            fontSize = 18.sp
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color = if (isBoxSelected && freeHours == courtDetailViewModel.freeHour.value) Color.Gray else MaterialTheme.colors.primary
                         )
-                    }
+                        .height(35.dp)
+                        .clickable() { // Solo se puede hacer clic si no está seleccionado
+                            isBoxSelected = true
+                            courtDetailViewModel.freeHour.value = freeHours
+                        }
+                ) {
+                    Text(
+                        text = freeHours,
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
                 }
+
             }
         }
 
@@ -254,22 +283,27 @@ fun CourtDateSection(courtDetailViewModel: CourtDetailViewModel) {
             )
 
             hoursList.forEach { freeHours ->
-                if (!courtDetailViewModel.reservedHours.value.contains(freeHours)) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .clip(CircleShape)
-                            .background(color = MaterialTheme.colors.primary)
-                            .height(35.dp)
-                    ) {
-                        Text(
-                            text = freeHours,
-                            color = Color.White,
-                            fontSize = 18.sp
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            color = if (isBoxSelected && freeHours == courtDetailViewModel.freeHour.value) Color.Gray else MaterialTheme.colors.primary
                         )
-                    }
+                        .height(35.dp)
+                        .clickable() { // Solo se puede hacer clic si no está seleccionado
+                            isBoxSelected = true
+                            courtDetailViewModel.freeHour.value = freeHours
+                        }
+                ) {
+                    Text(
+                        text = freeHours,
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
                 }
+
             }
         }
     }
@@ -284,7 +318,8 @@ fun PayBookButton(inscriptionCost: String) {
 
     Button(onClick = {
         val razorPayments = RazorPayments(activity)
-        razorPayments.startPayment(inscriptionCost.toInt())
+        razorPayments.startCourtPayment(inscriptionCost.toInt())
+        PaymentSucceed.isBookCourt = true
     },
         enabled = true,
         modifier = Modifier

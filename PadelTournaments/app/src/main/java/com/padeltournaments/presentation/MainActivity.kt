@@ -16,6 +16,8 @@ import com.padeltournaments.util.PaymentSucceed
 import com.razorpay.AutoReadOtpHelper
 import com.razorpay.PaymentResultListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
+
 @AndroidEntryPoint
 class MainActivity: ComponentActivity(), PaymentResultListener{
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,17 +31,25 @@ class MainActivity: ComponentActivity(), PaymentResultListener{
     }
     override fun onPaymentSuccess(paymentId: String?) {
         // Lógica para el pago exitoso
+        if(!PaymentSucceed.isBookCourt){
         PaymentSucceed.inscriptionSucceed = true
         Toast.makeText(this, "Pago realizado con exito", Toast.LENGTH_SHORT).show()
+        } else {
+            PaymentSucceed.bookCourtSucceed = true
+            Toast.makeText(this, "Pago realizado con exito", Toast.LENGTH_SHORT).show()
+        }
 
     }
     override fun onPaymentError(code: Int, message: String?) {
         // Lógica para el error de pago
-        PaymentSucceed.inscriptionSucceed = false
+        if(!PaymentSucceed.isBookCourt){
+            PaymentSucceed.inscriptionSucceed = false
+        } else {
+            PaymentSucceed.bookCourtSucceed = false
+        }
         Toast.makeText(this, "Pago abortado", Toast.LENGTH_SHORT).show()
     }
 }
-
 
 
 

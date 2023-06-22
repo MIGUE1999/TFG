@@ -65,4 +65,9 @@ object RoomModule {
     fun provideTournamentPlayerRepository(db:AppDatabase) : ITournamentPlayerRelationRepository {
         return TournamentPlayerRelationRepositoryImpl(db.tournamentPlayerRelationDao)
     }
+    @Provides
+    @Singleton
+    fun provideCourtPlayerCrossRefRepository(db:AppDatabase) : ICourtPlayerCrossRefRepository {
+        return CourtPlayerCrossRefRepository(db.courtPlayerCrossRefDao)
+    }
 }
