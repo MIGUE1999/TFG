@@ -13,4 +13,6 @@ interface ICourtPlayerCrossRefRepository {
     suspend fun insert(crossRef: CourtPlayerCrossRef)
 
     suspend fun delete(crossRef: CourtPlayerCrossRef)
+
+    fun getBookedDateAndHourByCourtId(courtId: Int): Flow<List<String>>
 }

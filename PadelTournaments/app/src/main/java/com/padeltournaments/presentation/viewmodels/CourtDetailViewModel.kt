@@ -158,4 +158,8 @@ class CourtDetailViewModel @Inject constructor(
             emit(PaymentSucceed.bookCourtSucceed)
         }.distinctUntilChanged()
 
+    fun getBookedDateAndHourByCourtId(courtId: Int): Flow<List<String>> {
+        return courtPlayerCrossRefRepository.getBookedDateAndHourByCourtId(courtId)
+    }
+
 }

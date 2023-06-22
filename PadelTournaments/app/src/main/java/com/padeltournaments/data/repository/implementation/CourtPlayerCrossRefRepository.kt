@@ -23,4 +23,8 @@ class CourtPlayerCrossRefRepository(private val dao: CourtPlayerCrossRefDao) : I
     override suspend fun delete(crossRef: CourtPlayerCrossRef) {
         dao.delete(crossRef)
     }
+
+    override fun getBookedDateAndHourByCourtId(courtId: Int): Flow<List<String>> {
+        return dao.getBookedDateAndHourByCourtId(courtId)
+    }
 }
