@@ -131,12 +131,13 @@ fun SearchCourt(navController: NavHostController,
             .fillMaxWidth())
     {
         FilterCourtLazyRow(searchViewModel, courts)
+        if (isFiltering == true)
+            CourtList(isOrganizer = isOrganizer, navController = navController, courts = courtsFiltered, idUser = idUser, isSearch = true)
+        else CourtList(isOrganizer = isOrganizer, navController = navController, courts = courts, idUser = idUser, isSearch = true)
 
-        CourtList(isOrganizer = isOrganizer, navController = navController, courts = courts, idUser = idUser, isSearch = true)
 
     }
 }
-
 
 @Composable
 fun FilterCourtLazyRow(

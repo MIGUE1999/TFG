@@ -27,22 +27,32 @@ import com.padeltournaments.util.LoginPref
 @Composable
 fun TournamentList(navController: NavHostController,
                    isOrganizer : Boolean,
-                   tournaments : List<TournamentEntity>?
+                   tournaments : List<TournamentEntity>?,
+                   isSearch: Boolean? = null
 ) {
     if (tournaments != null)
     {
-        if (isOrganizer) {
-            LazyColumn{
-                items(items = tournaments) { tournament ->
-                    TournamentCard(
-                        isOrganizer = true,
-                        tournament,
-                        navController
-                    )
+        if(isSearch == null) {
+            if (isOrganizer) {
+                LazyColumn {
+                    items(items = tournaments) { tournament ->
+                        TournamentCard(
+                            isOrganizer = true,
+                            tournament,
+                            navController
+                        )
+                    }
+                }
+            } else {
+                LazyColumn {
+                    items(items = tournaments) { tournament ->
+                        TournamentCard(isOrganizer = false, tournament, navController)
+                    }
                 }
             }
-        } else {
-            LazyColumn{
+        }
+        else{
+            LazyColumn {
                 items(items = tournaments) { tournament ->
                     TournamentCard(isOrganizer = false, tournament, navController)
                 }

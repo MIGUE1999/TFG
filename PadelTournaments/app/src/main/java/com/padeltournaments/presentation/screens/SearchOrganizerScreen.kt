@@ -37,10 +37,11 @@ fun SearchOrganizerScreen(session : LoginPref,
     val filteredCourtList by searchViewModel.filteredCourtList.observeAsState(emptyList())
 
     Scaffold(
-        bottomBar = { BottomBar(navController = navController, organizerScreens) },
         content = { TabBarSearchPlayer(navController = navController, tournaments = allTournaments.value,
-            filteredList = filteredList, searchViewModel = searchViewModel, isOrganizer = true, session = session, courts = allCourts.value.toList(), filteredCourtList = filteredCourtList) },
-    )
+            filteredList = filteredList, searchViewModel = searchViewModel, isOrganizer = true, session = session,
+            courts = allCourts.value.toList(), filteredCourtList = filteredCourtList) },
+        bottomBar = { BottomBar(navController = navController, organizerScreens) }
+        )
 }
 @Composable
 fun SearchContent(navController: NavHostController,
@@ -60,8 +61,8 @@ fun SearchContent(navController: NavHostController,
         FilterLazyRow(searchViewModel, tournaments)
         Spacer()
         if (isFiltering == true)
-            TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournamentsFiltered)
-        else TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournaments)
+            TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournamentsFiltered, isSearch = true)
+        else TournamentList(isOrganizer = isOrganizer, navController = navController, tournaments = tournaments, isSearch = true)
     }
 }
 

@@ -26,11 +26,6 @@ class SearchViewModel @Inject constructor(
     private var filteredCourtCostListValue = ArrayList<CourtEntity>()
     private var filteredCourtUbicationListValue = ArrayList<CourtEntity>()
 
-
-
-
-
-
     var categoryVal: String? = null
     var prize: String? = null
     var cost: String? = null
@@ -136,7 +131,6 @@ class SearchViewModel @Inject constructor(
             }
         }
         _filteredList.value = filteredCategoriesListValue.toList()
-        //setIsFiltering(true)
     }
 
     private fun filterTournamentByPrize(allTournaments : List<TournamentEntity>, prize: String) {
@@ -147,7 +141,6 @@ class SearchViewModel @Inject constructor(
             else -> ArrayList(allTournaments) // Orden predeterminado si no coincide con ninguna opción
         }
         _filteredList.value = filteredPrizeListValue
-        //setIsFiltering(true)
     }
     private fun filterTournamentByCost(allTournaments : List<TournamentEntity>, cost: String) {
         filteredCostListValue.clear()
@@ -157,7 +150,6 @@ class SearchViewModel @Inject constructor(
             else -> ArrayList(allTournaments) // Orden predeterminado si no coincide con ninguna opción
         }
         _filteredList.value = filteredCostListValue
-        //setIsFiltering(true)
     }
     fun filterTournamentByUbication(allTournaments : List<TournamentEntity>, location: String) {
         filteredUbicationListValue.clear()
@@ -173,7 +165,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun setIsFilteringCourt(isFiltering: Boolean){
-        _isFiltering.value = isFiltering
+        _isFilteringCourt.value = isFiltering
     }
 
     fun filterCombineCourtFilters(allCourts: List<CourtEntity>, cost: String?, ubication: String?) {
@@ -188,7 +180,6 @@ class SearchViewModel @Inject constructor(
         } else {
             _filteredCourtList.value = allCourts
         }
-        _isFilteringCourt.value = true
     }
 
     private fun filterCourtByCost(allCourts : List<CourtEntity>, cost: String) {
@@ -199,10 +190,12 @@ class SearchViewModel @Inject constructor(
                 else -> ArrayList(allCourts) // Orden predeterminado si no coincide con ninguna opción
             }
             _filteredCourtList.value = filteredCourtCostListValue.toList()
-            //setIsFiltering(true)
+            filteredCourtCostListValue.toList().forEach{
+                print(it.courtNumber)
+            }
     }
 
-    fun filterCourtByUbication(allCourts : List<CourtEntity>, location: String) {
+    private fun filterCourtByUbication(allCourts : List<CourtEntity>, location: String) {
         filteredCourtUbicationListValue.clear()
         allCourts.forEach { court ->
             if (court.province == location) {
