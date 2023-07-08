@@ -37,6 +37,7 @@ class SignUpViewModel @Inject constructor(
     val bankAccount = mutableStateOf("")
     val rol = mutableStateOf(Rol.player)
     val photo = mutableStateOf<Bitmap?>(null)
+    val isPressed = mutableStateOf(false)
 
     val showForm = mutableStateOf(false)
 
@@ -59,9 +60,9 @@ class SignUpViewModel @Inject constructor(
     val validatePasswordError = "Introduzca una contraseña valida"
     val validateEqualPassowrdError = "Las contraseñas deben coincidir"
     val validateNicknameError = "Introduzca un nickname valido"
-    val validateCifError = "Introduzca un cif valido"
+    val validateCifError = "Introduzca un cif valido. Ej: A333564109"
     val validateClubNameError = "Introduzca un nombre de club valido"
-    val validateBankAccountError = "Introduzca una cuenta bancaria valida"
+    val validateBankAccountError = "Introduzca una cuenta bancaria valida. Ej: ES2114650100722030876293"
     val validatePhotorError = "Introduzca foto de perfil"
 
     var isPasswordVisible = mutableStateOf(false)
@@ -146,6 +147,22 @@ class SignUpViewModel @Inject constructor(
     fun onBankAccountChanged(bankAcc:String){
         bankAccount.value = bankAcc
     }
+
+    private fun isCif(): Boolean {
+        val firstChar = cif.value.firstOrNull() ?: return false
+
+        if( cif.value.length == 10 && firstChar.isLetter()){
+            return true
+        }
+        return false
+    }
+
+    private fun isIban(): Boolean {
+        val firtsTwoChars = bankAccount.value.take(2)
+        if( firtsTwoChars.length == 2 && firtsTwoChars.all { it.isLetter() })
+            return true
+        return false
+    }
     fun validateData(): Boolean{
         validateName.value = nameUser.value.isNotBlank()
         validateSurname.value = surnameUser.value.isNotBlank()
@@ -162,13 +179,14 @@ class SignUpViewModel @Inject constructor(
                     && validatePassword.value && validatePasswordsEqual.value && validatePhoto.value && validateNickname.value
         }
         else {
-            validateCif.value = cif.value.isNotBlank()
-            validateBankAccount.value = bankAccount.value.isNotBlank()
+            validateCif.value = cif.value.isNotBlank() && isCif()
+            validateBankAccount.value = bankAccount.value.isNotBlank() && isIban()
             validateClubName.value = clubName.value.isNotBlank()
             return validateName.value && validateSurname.value
                     && validateEmail.value && validatePhone.value
                     && validatePassword.value && validatePasswordsEqual.value
-                    && validateCif.value && validateBankAccount.value && validatePhoto.value && validateClubName.value
+                    && validateCif.value && validateBankAccount.value && validatePhoto.value
+                    && validateClubName.value
         }
     }
     fun updateOrganizer(idUser: String){

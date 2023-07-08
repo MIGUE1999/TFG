@@ -32,6 +32,8 @@ import com.padeltournaments.presentation.viewmodels.SignUpViewModel
 import com.padeltournaments.util.LoginPref
 import com.padeltournaments.util.LoginPref.Companion.KEY_ID
 import com.padeltournaments.util.organizerScreens
+import kotlin.math.sign
+
 @Composable
 fun ProfileOrganizerScreen(session : LoginPref,
                            navController : NavHostController,
@@ -230,6 +232,8 @@ fun ProfileOrganizerData(
                 if (userId != null) {
                     if(signUpViewModel.validateData()) {
                         signUpViewModel.updateOrganizer(userId)
+                        signUpViewModel.updateOrganizer(userId)
+                        signUpViewModel.showForm.value = !signUpViewModel.showForm.value
                     }
                 }
             },

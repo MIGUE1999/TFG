@@ -68,4 +68,8 @@ sealed class NavigationScreens(
         route = "court_detail/{idCourt}",
         title = "CourtDetail",
     )
+    object EditCourt : NavigationScreens(
+        route = "edit_court/{idCourt}",
+        title = "EditTournament",
+    )
 }

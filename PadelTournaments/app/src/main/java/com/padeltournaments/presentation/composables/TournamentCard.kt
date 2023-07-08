@@ -226,7 +226,7 @@ fun CourtCard(isOrganizer : Boolean,
                     if (isOrganizer) {
                         IconButton(onClick = {
                             val idCourt = court.id.toString()
-                            navController.navigate("edit_tournament/$idCourt")
+                            navController.navigate("edit_court/$idCourt")
                         }) {
                             Icon(Icons.Filled.Edit, "EditCourt")
                         }

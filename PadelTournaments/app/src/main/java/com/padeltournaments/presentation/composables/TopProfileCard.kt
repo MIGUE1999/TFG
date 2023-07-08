@@ -32,8 +32,6 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
             .fillMaxWidth()
             .fillMaxHeight(0.25f)
     ) {
-        var isPressed by remember { mutableStateOf(false) }
-
         Column(
             modifier = Modifier
                 .fillMaxHeight()
@@ -100,7 +98,7 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                 Box(
                     modifier = Modifier
                         .weight(0.9f)
-                        .padding(10.dp)
+                        .padding(5.dp)
                         .fillMaxHeight()
                 ) {
                     Text(
@@ -117,14 +115,14 @@ fun TopProfileCard(session: LoginPref, navController: NavHostController, signUpV
                 ) {
                     IconButton(
                         onClick = {
-                            isPressed = !isPressed
+                            !signUpViewModel.isPressed.value
                             signUpViewModel.showForm.value = !signUpViewModel.showForm.value
                         }
                     ) {
                         Icon(
                             Icons.Filled.Edit,
                             contentDescription = null,
-                            modifier = if (isPressed) Modifier.background(Color.Gray) else Modifier
+                            modifier = if (signUpViewModel.showForm.value) Modifier.background(Color.Gray) else Modifier
                         )
                     }
                 }

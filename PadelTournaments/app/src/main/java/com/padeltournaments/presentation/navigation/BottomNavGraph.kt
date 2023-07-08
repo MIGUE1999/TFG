@@ -63,7 +63,9 @@ fun BottomNavGraph( navController : NavHostController = rememberNavController(),
         composable(route = NavigationScreens.CreateCourt.route){
             CreateCourtScreen(context = context, session = session, navController = navController )
         }
-
+        composable(route = NavigationScreens.EditCourt.route){backStackEntry ->
+            EditCourtScreen(session = session, navController = navController, idCourt = backStackEntry.arguments?.getString("idCourt") )
+        }
         composable(route = NavigationScreens.CourtDetail.route){ backStackEntry ->
             CourtDetailScreen(context = context, navController = navController, idCourt = backStackEntry.arguments?.getString("idCourt"), session = session )
         }
