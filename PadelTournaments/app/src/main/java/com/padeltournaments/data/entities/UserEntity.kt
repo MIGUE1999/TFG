@@ -15,5 +15,4 @@ data class UserEntity(
     var surname: String,
     var rol : String,
     val photo: Bitmap? = null,
-    //val profileImage: Bitmap? = null
 )

@@ -37,11 +37,6 @@ object RoomModule {
     }
     @Provides
     @Singleton
-    fun provideBookingRepository(db:AppDatabase) : IBookingRepository {
-        return BookingRepositoryImpl(db.bookingDao)
-    }
-    @Provides
-    @Singleton
     fun provideCourtRepository(db:AppDatabase) : ICourtRepository {
         return CourtRepositoryImpl(db.courtDao)
     }
@@ -54,11 +49,6 @@ object RoomModule {
     @Singleton
     fun providePlayerRepository(db:AppDatabase) : IPlayerRepository {
         return PlayerRepositoryImpl(db.playerDao)
-    }
-    @Provides
-    @Singleton
-    fun provideInscriptionRepository(db:AppDatabase) : IInscriptionRepository {
-        return InscriptionRepositoryImpl(db.inscriptionDao)
     }
     @Provides
     @Singleton

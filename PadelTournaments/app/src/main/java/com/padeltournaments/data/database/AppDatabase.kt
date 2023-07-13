@@ -10,12 +10,11 @@ import com.padeltournaments.data.entities.relations.TournamentPlayerRelation
 import com.padeltournaments.util.Converters
 @Database(entities = [UserEntity::class, PlayerEntity::class, OrganizerEntity::class,
     TournamentEntity::class, CourtEntity::class,
-    InscriptionEntity::class, BookingEntity::class,
     TournamentPlayerRelation::class,
     CourtPlayerCrossRef::class
     //OrganizatorWithTournaments::class
 ],
-    version = 24,
+    version = 25,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -25,8 +24,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract val playerDao : PlayerDao
     abstract val organizerDao : OrganizerDao
     abstract val courtDao: CourtDao
-    abstract val inscriptionDao : InscriptionDao
-    abstract val bookingDao : BookingDao
     abstract val tournamentPlayerRelationDao: TournamentPlayerRelationDao
     abstract val courtPlayerCrossRefDao: CourtPlayerCrossRefDao
 

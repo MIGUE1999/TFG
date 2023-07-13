@@ -18,5 +18,5 @@ data class TournamentEntity(
     val ubication: String,
     val province: String,
 
-    val idOrganizer : Int,
+    val idOrganizer : Int
 )

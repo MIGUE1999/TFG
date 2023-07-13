@@ -151,8 +151,3 @@ fun HomeOrganizerContentCourt(navController: NavHostController, courts : List<Co
         CourtList(isOrganizer = true, navController = navController, courts = courts, idUser = idUser, isSearch = false)
     }
 }
-
-
-
-
-

@@ -86,7 +86,7 @@ fun EditCourtScreen(navController: NavController,
             ) {
 
 
-                Text(text = "Crear Pista", fontSize = 40.sp)
+                Text(text = "Editar Pista", fontSize = 40.sp)
 
                 CustomTextInput(
                     value = createCourtViewModel.ubication.value,

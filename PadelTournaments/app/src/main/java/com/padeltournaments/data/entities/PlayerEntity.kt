@@ -14,5 +14,4 @@ data class PlayerEntity(
     var id: Int = 0,
     var nickname : String,
     var userId : Int
-    // torneosGanados
 )
